@@ -1,39 +1,29 @@
 const express = require("express");
-const { ApolloServer } = require("@apollo/server");
-const bodyParser = require("body-parser");
-const { expressMiddleware } = require("@apollo/server/express4");
+const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
+
+const { typeDefs } = require("./graphql/schema");
+const { resolvers } = require("./graphql/resolvers");
+const { prisma } = require("./db/prisma");
 
 async function startServer() {
   const app = express();
-  const server = new ApolloServer({
-    typeDefs: `
-            type Todo {
-                id: ID!,
-                title: String!,
-                completed: Boolean
-            }
 
-            type Query {
-                getTodos: [Todo]
-            }
-        `,
-    resolvers: {
-        Query: {
-            getTodos: () => [
-                { id: 1, title: "Todo 1", completed: false },
-            ]
-    },
-}
-})
+  const apolloServer = new ApolloServer({
+    typeDefs: typeDefs,
+    resolvers: resolvers,
+    context: { prisma },
+  });
 
-  app.use(bodyParser.json());
-  app.use(cors());
-  await server.start();
+  await apolloServer.start();
 
-  app.use("/graphql", expressMiddleware(server));
+  // Apply Apollo Server as middleware to the Express app
+  apolloServer.applyMiddleware({ app });
 
-  app.listen(3000, () => console.log("Server started at port 3000"));
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Server started at http://localhost:${PORT}`);
+  });
 }
 
 startServer();

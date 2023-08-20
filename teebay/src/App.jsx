@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Route, Routes } from "react-router-dom";
+import { publicRoutes } from "./Teebay";
 
 function App() {
-
   return (
-    <>
-      <p className="bg-black font
-       text-lg">Hello World</p>
-    </>
-  )
+    <Routes>
+      {publicRoutes.map((route, index) => (
+        <Route
+          key={index}
+          path={route.path}
+          element={route.element}
+        />
+      ))}
+    </Routes>
+  );
 }
 
-export default App
+export default App;
