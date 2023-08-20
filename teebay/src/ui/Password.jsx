@@ -9,6 +9,8 @@ const Password = ({ setPassword, text }) => {
   return (
     <div className="relative w-full">
       <input
+      maxLength={50}
+      minLength={8}
         onChange={(e) => setPassword(e.target.value)}
         type={showPassword ? "text" : "password"}
         placeholder={text}

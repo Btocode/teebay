@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { toast } from "react-toastify";
+import AuthLayout from "../ui/AuthLayout";
 import Button from "../ui/Button";
 import Password from "../ui/Password";
-import AuthLayout from "../ui/AuthLayout";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -12,67 +13,140 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
+  const checkPassword = () => {
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match", {
+        toastId: "password",
+      });
+      return false;
+    }
+    return true;
+  };
+  const validateData = () => {
+    if (firstName === "") {
+      toast.error("First name cannot be empty", {
+        toastId: "firstName",
+      });
+      return false;
+    }
+    if (lastName === "") {
+      toast.error("Last name cannot be empty", {
+        toastId: "lastName",
+      });
+      return false;
+    }
+    if (address === "") {
+      toast.error("Address cannot be empty", {
+        toastId: "address",
+      });
+      return false;
+    }
+    if (email === "") {
+      toast.error("Email cannot be empty", {
+        toastId: "email",
+      });
+      return false;
+    }
+    if (phoneNumber === "") {
+      toast.error("Phone number cannot be empty", {
+        toastId: "phoneNumber",
+      });
+      return false;
+    }
+    return checkPassword();
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (validateData()) {
+      // Send data to backend
+      console.log("Data is valid");
+    }
+  };
+
+  console.log(
+    firstName,
+    lastName,
+    address,
+    email,
+    phoneNumber,
+    password,
+    confirmPassword
+  );
+
   return (
-    <AuthLayout heading={"Sign Up"} classname={"xl:w-[800px] md:w-[700px] w-full border-2 py-10"}>
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-          }}
-          className="flex flex-col justify-center items-center px-3 py-5 gap-8 w-[80%]">
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="First Name"
-              className="border-2 px-4 py-2 outline-none rounded w-full"
-            />
-            <input
-              type="text"
-              placeholder="Last Name"
-              className="border-2 px-4 py-2 outline-none rounded w-full"
-            />
-          </div>
+    <AuthLayout
+      heading={"Sign Up"}
+      classname={"xl:w-[800px] md:w-[700px] w-full border-2 py-10"}>
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col justify-center items-center px-3 py-5 gap-8 w-[80%]">
+        <div className="flex gap-4 w-full">
           <input
             type="text"
-            placeholder="Address"
+            onChange={(e) => setFirstName(e.target.value)}
+            placeholder="First Name"
             className="border-2 px-4 py-2 outline-none rounded w-full"
           />
-          <div className="flex gap-4">
-            <input
-              type="text"
-              placeholder="Email"
-              className="border-2 px-4 py-2 outline-none rounded w-full"
-            />
-            <input
-              type="text"
-              placeholder="Phone Number"
-              className="border-2 px-4 py-2 outline-none rounded w-full"
-            />
-          </div>
-          <Password
-            setPassword={setPassword}
-            text="Password"
+          <input
+            onChange={(e) => setLastName(e.target.value)}
+            type="text"
+            placeholder="Last Name"
+            className="border-2 px-4 py-2 outline-none rounded w-full"
           />
-          <Password
-            setPassword={setConfirmPassword}
-            text="Confirm Password"
-          />
-
-          <Button
-            text="Sign Up"
-            classname={
-              "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-36"
-            }
-          />
-        </form>
-        <div className="flex gap-3">
-          <p>Already have an account? </p>
-          <a
-            href="/login"
-            className="text-blue-500 hover:text-blue-600 font-semibold">
-            Sign In
-          </a>
         </div>
-        </AuthLayout>
+        <input
+          type="text"
+          onChange={(e) => setAddress(e.target.value)}
+          placeholder="Address"
+          className="border-2 px-4 py-2 outline-none rounded w-full"
+        />
+        <div className="flex gap-4 w-full">
+          <input
+            onChange={(e) => setEmail(e.target.value)}
+            type="email"
+            placeholder="Email"
+            className="border-2 px-4 py-2 outline-none rounded w-full"
+          />
+          <input
+            onChange={(e) => {
+              // Take only number inputs
+                const re = /^[0-9\b]+$/;
+                if (e.target.value === '' || re.test(e.target.value)) {
+                     setPhoneNumber(e.target.value)
+                 }
+            }}
+            value={phoneNumber}
+            type="phone"
+            placeholder="Phone Number"
+            className="border-2 px-4 py-2 outline-none rounded w-full"
+          />
+        </div>
+        <Password
+          setPassword={setPassword}
+          text="Password"
+        />
+        <Password
+          setPassword={setConfirmPassword}
+          text="Confirm Password"
+        />
+
+        <Button
+          text="Sign Up"
+          classname={
+            "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-36"
+          }
+        />
+      </form>
+      <div className="flex gap-3">
+        <p>Already have an account? </p>
+        <a
+          href="/login"
+          className="text-blue-500 hover:text-blue-600 font-semibold">
+          Sign In
+        </a>
+      </div>
+    </AuthLayout>
   );
 };
 
