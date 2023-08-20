@@ -1,4 +1,8 @@
+import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { LOGIN_USER } from "../graphql/mutations";
 import AuthLayout from "../ui/AuthLayout";
 import Button from "../ui/Button";
 import Password from "../ui/Password";
@@ -6,13 +10,56 @@ import Password from "../ui/Password";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const [LoginUser, { data, loading, error }] = useMutation(LOGIN_USER);
+
+  const validateData = () => {
+    if (email === "") {
+      toast.error("Email cannot be empty", {
+        toastId: "email",
+      });
+      return false;
+    }
+    return true;
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (validateData()) {
+      try {
+        const { data } = await LoginUser({
+          variables: {
+            input: {
+              email,
+              password,
+            },
+          },
+        });
+      } catch (error) {
+        toast.error(error.message, {
+          toastId: "login",
+        });
+      }
+    }
+  };
+
+  if (data) {
+    toast.success("Login successful", {
+      toastId: "login",
+    });
+
+    localStorage.setItem("token", data.loginUser.token);
+    localStorage.setItem("userId", data.loginUser.id);
+    navigate("/");
+  }
 
   return (
-    <AuthLayout heading={"Sign In"} classname={"xl:w-[750px] md:w-[650px] w-full border-2 h-[500px]"}>
+    <AuthLayout
+      heading={"Sign In"}
+      classname={"xl:w-[750px] md:w-[650px] w-full border-2 h-[500px]"}>
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-        }}
+        onSubmit={handleLogin}
         className="flex flex-col justify-center items-center p-6 gap-8 w-[80%]">
         <input
           onChange={(e) => setEmail(e.target.value)}
