@@ -1,5 +1,7 @@
+import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { CREATE_USER } from "../graphql/mutations";
 import AuthLayout from "../ui/AuthLayout";
 import Button from "../ui/Button";
 import Password from "../ui/Password";
@@ -12,6 +14,8 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
 
   const checkPassword = () => {
     if (password !== confirmPassword) {
@@ -56,23 +60,37 @@ const Register = () => {
     return checkPassword();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateData()) {
       // Send data to backend
-      console.log("Data is valid");
+      try {
+        const { data } = await createUser({
+          variables: {
+            input: {
+              firstname: firstName,
+              lastname: lastName,
+              password: password,
+              email: email,
+              address: address,
+              phone: phoneNumber,
+            },
+          },
+        });
+      } catch (error) {
+        toast.error(error.message, {
+          toastId: "register",
+        });
+      }
     }
   };
 
-  console.log(
-    firstName,
-    lastName,
-    address,
-    email,
-    phoneNumber,
-    password,
-    confirmPassword
-  );
+  if(data?.createUser){
+    toast.success("Account created successfully", {
+      toastId: "register",
+    });
+    
+  }
 
   return (
     <AuthLayout
@@ -111,10 +129,10 @@ const Register = () => {
           <input
             onChange={(e) => {
               // Take only number inputs
-                const re = /^[0-9\b]+$/;
-                if (e.target.value === '' || re.test(e.target.value)) {
-                     setPhoneNumber(e.target.value)
-                 }
+              const re = /^[0-9\b]+$/;
+              if (e.target.value === "" || re.test(e.target.value)) {
+                setPhoneNumber(e.target.value);
+              }
             }}
             value={phoneNumber}
             type="phone"
