@@ -1,5 +1,5 @@
 const express = require("express");
-const { ApolloServer } = require("@apollo/server");
+const { ApolloServer } = require("apollo-server-express");
 const { expressMiddleware } = require("@apollo/server/express4");
 const cors = require("cors");
 
@@ -10,16 +10,16 @@ const { prisma } = require("./db/prisma");
 async function startServer() {
   const app = express();
 
-  const server = new ApolloServer({
+  const apolloServer = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
     context: { prisma },
   });
 
   app.use(cors());
-  await server.start();
+  await apolloServer.start();
 
-  server.applyMiddleware({ app, path: "/graphql" });
+  apolloServer.applyMiddleware({ app, path: "/graphql" });
 
   const PORT = process.env.PORT || 3000;
   app.listen(PORT, () => {

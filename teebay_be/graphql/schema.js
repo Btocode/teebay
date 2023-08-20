@@ -1,5 +1,8 @@
-
 const typeDefs = `
+  type Query {
+    _empty: String
+  }
+
   type Mutation {
     createUser(input: CreateUserInput!): User
   }
@@ -24,4 +27,4 @@ const typeDefs = `
   }
 `;
 
-module.exports = typeDefs;
+module.exports = { typeDefs };
