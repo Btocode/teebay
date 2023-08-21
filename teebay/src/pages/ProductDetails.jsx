@@ -3,7 +3,6 @@ import { LuChevronsUpDown } from "react-icons/lu";
 import { RxCross2 } from "react-icons/rx";
 import ConfirmationModal from "../ui/modals/ConfirmationModal";
 import SuccessModal from "../ui/modals/SuccessModal";
-import Button from "../ui/Button";
 
 const data = {
   id: 3,
