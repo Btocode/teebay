@@ -22,10 +22,10 @@ const ProductDetails = () => {
   const [product, setProduct] = React.useState(data);
   return (
     <main className="w-full flex items-center h-full">
-      <div className="container mx-auto flex flex-col items-center h-[700px]">
+      <div className="container mx-auto flex flex-col items-center h-[700px] overflow-auto">
       <h1>
       </h1>
-        <div className="product-details w-[750px] mt-5 overflow-scroll custom-scrollbar p-8 flex flex-col gap-4">
+        <div className="product-details  xl:w-[800px] mt-5 overflow-scroll custom-scrollbar p-8 flex flex-col gap-4">
           <span className="w-full flex flex-col gap-2">
             <p>Title</p>
             <input
