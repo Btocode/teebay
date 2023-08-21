@@ -1,13 +1,30 @@
 import React from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { setConfirmationModal } from "../redux/features/modal/modalSlice";
 
 const Product = ({ productInfo }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleClickProduct = (event) => {
+    // check if click is from delete button
+    if (event.target.classList.contains("deleteButton")) {
+        console.log("click");
+      return;
+    }
+    else{
+    // if not, redirect to product page
+    navigate(`/product/${productInfo.id}`);
+}
+  };
+
   return (
-    <div className=" w-full p-4">
-      <div className="wrapper border-2 min-h-[300px] capitalize p-6 flex flex-col gap-5">
+    <div className="w-full p-4 ">
+      <div
+        onClick={handleClickProduct}
+        className="wrapper border-2 hover:border-2 hover:border-gray-700 min-h-[300px] capitalize p-6 flex flex-col gap-5 cursor-pointer">
         <header className="flex justify-between">
           <h1 className="text-2xl font-medium text-gray-600">
             {productInfo.name}
@@ -22,7 +39,7 @@ const Product = ({ productInfo }) => {
                 })
               );
             }}
-            className="text-gray-600 cursor-pointer text-3xl hover:text-red-500"
+            className="deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500"
           />
         </header>
         <span className="flex gap-2 text-gray-400">
