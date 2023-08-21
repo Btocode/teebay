@@ -1,5 +1,8 @@
+import React from "react";
 import { Route, Routes } from "react-router-dom";
-import { publicRoutes } from "./Teebay";
+import { protectedRoutes, publicRoutes } from "./Teebay";
+import Authorization from "./middlewares/Authorization";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
@@ -11,6 +14,36 @@ function App() {
           element={route.element}
         />
       ))}
+
+      <Route
+        path="/"
+        element={<Authorization />}>
+        {protectedRoutes.map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            element={route.element}>
+            {route.children &&
+              route.children.map((child, childIndex) => (
+                <Route
+                  key={childIndex}
+                  path={`${route.path}${child.path}`}
+                  element={child.element}>
+                  {child.children &&
+                    child.children.map((grandChild, grandChildIndex) => (
+                      <Route
+                        key={grandChildIndex}
+                        path={grandChild.path}
+                        element={grandChild.element}
+                      />
+                    ))}
+                </Route>
+              ))}
+          </Route>
+        ))}
+      </Route>
+
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
