@@ -1,6 +1,8 @@
 import React from 'react'
 import Layout from "../ui/Layout"
 import Product from "../components/Product"
+import ConfirmationModal from "../ui/modals/ConfirmationModal"
+import SuccessModal from "../ui/modals/SuccessModal"
 
 const products = [
   {
@@ -86,6 +88,8 @@ const Home = () => {
             ))}
         </div>
         </div>
+        <ConfirmationModal />
+        <SuccessModal />
     </main>
   )
 }
