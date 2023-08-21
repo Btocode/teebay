@@ -3,6 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import { protectedRoutes, publicRoutes } from "./Teebay";
 import Authorization from "./middlewares/Authorization";
 import NotFound from "./pages/NotFound";
+import Layout from "./ui/Layout";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
       <Route
         path="/"
         element={<Authorization />}>
+        <Route path="/" element={<Layout />}>
         {protectedRoutes.map((route, index) => (
           <Route
             key={index}
@@ -39,8 +41,11 @@ function App() {
                     ))}
                 </Route>
               ))}
+
           </Route>
+
         ))}
+      </Route>
       </Route>
 
       <Route path="*" element={<NotFound />} />
