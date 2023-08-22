@@ -1,4 +1,6 @@
 import { RxCheckCircled } from "react-icons/rx";
+import useOutsideClickHandler from "../../hooks/useOutsideClickHandler";
+import { useRef } from "react";
 
 const ListItemModal = ({
   trigger,
@@ -6,9 +8,14 @@ const ListItemModal = ({
   items,
   triggerFunction,
   cname,
-  defaultSelection,
-  email,
+  selectedItems,
 }) => {
+  const modalRef = useRef(null);
+  useOutsideClickHandler(modalRef, () => {
+    setTrigger(false);
+  });
+  
+
   return (
     <div
       className={`absolute top-0 shadow-lg translate-all duration-200 ${cname} ${
@@ -17,30 +24,26 @@ const ListItemModal = ({
       ${cname}
       
     `}>
-      <div className="flex flex-col gap-4 text-center bg-white rounded-b-lg shadow-lg p-2 overflow-y-auto max-h-48 custom_scrollbar">
-        <div className="text-left flex flex-col text-sm text-[#034F75] tracking-widest pb-2">
+      <div
+      ref={modalRef}
+       className="flex flex-col gap-4 text-center bg-white rounded-b-lg shadow-lg p-2 overflow-y-auto custom-scrollbar">
+        <div className="text-left flex flex-col text-sm text-gray-600 tracking-widest pb-2">
           {items?.map((item, index) => (
             <span
               onClick={() => {
                 setTrigger(false);
-                triggerFunction(item, email);
+                triggerFunction(item);
               }}
               key={index}
-              className={` flex items-center hover:bg-[#034F75] hover:text-white shadow-sm p-2 rounded-md cursor-pointer justify-between ${
-                item?.name?.toLowerCase() === "absent" && "text-red-500"
-              } ${
-                item?.name?.toLowerCase() === "present" && "text-green-500"
-              } `}>
+              className={` flex items-center hover:bg-gray-400 hover:text-white shadow-sm p-2 rounded cursor-pointer justify-between`}>
               <p
                 key={index}
                 className="">
-                {item?.name?.toUpperCase()}
+                {item?.name?.split("_").join(" ")}
               </p>
               <RxCheckCircled
                 className={`inline-block text-lg ${
-                  defaultSelection !== item?.name?.toLowerCase() &&
-                  defaultSelection !== item?.id &&
-                  "hidden"
+                  !selectedItems?.includes(item?.name) && "hidden"
                 }`}
               />
             </span>

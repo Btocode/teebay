@@ -23,4 +23,16 @@ const LOGIN_USER = gql`
   }
 `;
 
-export { CREATE_USER, LOGIN_USER };
+const CREATE_PRODUCT = gql`
+  mutation CreateProduct($input: CreateProductInput!) {
+    createProduct(input: $input) {
+      id
+      title
+      price
+      rent
+    }
+  }
+`;
+
+
+export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT };

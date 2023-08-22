@@ -29,6 +29,7 @@ const Summery = ({productInfo}) => {
             </div>
             <div className="flex justify-start gap-2    ">
                 <p className="text-md ">Categories: </p>
+                <span className="flex flex-wrap gap-2">
                 {
                     productInfo.categories.map((category, index) => (
                         <span
@@ -38,6 +39,7 @@ const Summery = ({productInfo}) => {
                         </span>
                     ))
                 }
+                </span>
             </div>
         </div>
     </div>
