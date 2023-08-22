@@ -74,6 +74,23 @@ const resolvers = {
 
       return existingUser;
     },
+    createProduct: async (_, { input }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      // Create product
+      const newProduct = await prisma.product.create({
+        data: {
+          ...input,
+          seller: { connect: { id: userId } },
+        },
+      });
+
+      return newProduct;
+    },
   },
 };
 
