@@ -51,4 +51,13 @@ const UPDATE_PRODUCT = gql`
   }
 `;
 
-export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT, UPDATE_PRODUCT };
+const DELETE_PRODUCT = gql`
+  mutation DeleteProduct($id: ID!) {
+    deleteProduct(id: $id) {
+      id
+    }
+  }
+`;
+
+
+export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT };

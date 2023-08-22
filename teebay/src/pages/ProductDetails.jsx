@@ -71,7 +71,7 @@ const ProductDetails = () => {
             categories: product.categories,
           },
         },
-      });
+      })
     }
   };
 

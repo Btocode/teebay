@@ -36,6 +36,7 @@ const ConfirmationModal = () => {
                   isOpen: false,
                   message: null,
                   confirmed: true,
+                  from: modalStore.confirmationModal.from,
                 })
               );
             }}
