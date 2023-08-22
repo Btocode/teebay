@@ -32,8 +32,8 @@ const typeDefs = gql`
     rent_type: String!
     categories: [String!]!
     description: String!
-    date_posted: String!
-    views: Int!
+    date_posted: String
+    views: Int
     seller: User
   }
 

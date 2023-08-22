@@ -36,8 +36,8 @@ model Product {
   rent_type   String
   categories  Category[]
   description String
-  date_posted DateTime
-  views       Int
+  date_posted DateTime   @default(now())
+  views       Int        @default(0)
   seller      User?      @relation(fields: [sellerId], references: [id])
   sellerId    Int?
 }
