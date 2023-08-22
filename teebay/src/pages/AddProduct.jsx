@@ -9,6 +9,7 @@ import Summery from "../components/Summery";
 import Title from "../components/Title";
 import { CREATE_PRODUCT } from "../graphql/mutations";
 import Button from "../ui/Button";
+import { validateProductInfo } from "../utils/validateProductInfo";
 
 const AddProduct = () => {
   const [current, setCurrent] = useState(0);
@@ -26,38 +27,37 @@ const AddProduct = () => {
   const [CreateProduct, { data, loading, error }] = useMutation(CREATE_PRODUCT);
 
   const next = () => {
-
-    if(current === 0 && productInfo.title === ""){
+    if (current === 0 && productInfo.title === "") {
       toast.warning("Please provide a title for your product", {
         toastId: "title",
       });
       return;
     }
-    if(current === 1 && productInfo.description === ""){
+    if (current === 1 && productInfo.description === "") {
       toast.warning("Please provide a description for your product", {
         toastId: "description",
       });
       return;
     }
-    if(current === 2 && productInfo.categories.length === 0){
+    if (current === 2 && productInfo.categories.length === 0) {
       toast.warning("Please provide a category for your product", {
         toastId: "categories",
       });
       return;
     }
-    if(current === 3 && isNaN(productInfo.price.toString())){
+    if (current === 3 && isNaN(productInfo.price.toString())) {
       toast.warning("Please provide a valid price for your product", {
         toastId: "price",
       });
       return;
     }
-    if(current === 3 && isNaN(productInfo.rent.toString())){
+    if (current === 3 && isNaN(productInfo.rent.toString())) {
       toast.warning("Please provide a valid rent for your product", {
         toastId: "rent",
       });
       return;
     }
-    if(current === 3 && productInfo.rent_type === ""){
+    if (current === 3 && productInfo.rent_type === "") {
       toast.warning("Please provide a rent type for your product", {
         toastId: "rent_type",
       });
@@ -89,52 +89,15 @@ const AddProduct = () => {
     <Summery productInfo={productInfo} />,
   ];
 
-  const validateProductInfo = () => {
-    if (productInfo.title === "") {
-      toast.warning("Please provide a title for your product", {
-        toastId: "title",
-      });
-      return false;
-    }
-    if (productInfo.description === "") {
-      toast.warning("Please provide a description for your product", {
-        toastId: "description",
-      });
-      return false;
-    }
-    if (isNaN(productInfo.price)) {
-      toast.warning("Please provide a valid price for your product", {
-        toastId: "price",
-      });
-      return false;
-    }
-    if (isNaN(productInfo.rent)) {
-      toast.warning("Please provide a valid rent for your product", {
-        toastId: "rent",
-      });
-      return false;
-    }
-    if (productInfo.rent_type === "") {
-      toast.warning("Please provide a rent type for your product", {
-        toastId: "rent_type",
-      });
-      return false;
-    }
-    if (productInfo.categories.length === 0) {
-      toast.warning("Please provide a category for your product", {
-        toastId: "categories",
-      });
-      return false;
-    }
-    return true;
-  };
+
 
   const handleSubmit = () => {
-    if (validateProductInfo()) {
+    if (validateProductInfo(productInfo)) {
       CreateProduct({
         variables: {
           input: productInfo,
         },
+        refetchQueries: ["GetProductListOfUser"],
       })
         .then((res) => {
           toast.success("Product added successfully", {
@@ -153,8 +116,7 @@ const AddProduct = () => {
   return (
     <main className="w-full flex items-center h-full">
       <div className="container mx-auto flex flex-col items-center h-[700px] overflow-auto justify-center">
-        <div
-         className="product-details  xl:w-[900px] overflow-scroll custom-scrollbar p-8 flex flex-col gap-5 text-gray-600 min-h-[400px]">
+        <div className="product-details  xl:w-[900px] lg:w-[90%] w-full overflow-scroll custom-scrollbar p-8 flex flex-col gap-5 text-gray-600 min-h-[400px]">
           {item[current]}
           <div
             className={`

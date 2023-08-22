@@ -18,7 +18,7 @@ const ListItemModal = ({
 
   return (
     <div
-      className={`absolute top-0 shadow-lg translate-all duration-200 ${cname} ${
+      className={`absolute top-0 shadow-lg z-10 translate-all duration-200 ${cname} ${
         trigger ? "scale-100" : "scale-0"
       }
       ${cname}

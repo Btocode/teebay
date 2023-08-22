@@ -34,5 +34,21 @@ const CREATE_PRODUCT = gql`
   }
 `;
 
+const UPDATE_PRODUCT = gql`
+  mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+    updateProduct(id: $id, input: $input) {
+      id
+      title
+      price
+      rent
+      rent_type
+      categories
+      description
+      date_posted
+      views
+    }
 
-export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT };
+  }
+`;
+
+export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT, UPDATE_PRODUCT };

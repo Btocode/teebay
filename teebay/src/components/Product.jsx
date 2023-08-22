@@ -11,13 +11,23 @@ const Product = ({ productInfo }) => {
   const handleClickProduct = (event) => {
     // check if click is from delete button
     if (event.target.classList.contains("deleteButton")) {
-        console.log("click");
       return;
     }
     else{
     // if not, redirect to product page
     navigate(`/product/${productInfo.id}`);
 }
+  };
+
+  const handleDateTime = (unix) => {
+    const date = new Date(parseInt(unix))
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const day = date.getDate();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+
+    return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
   return (
@@ -27,7 +37,7 @@ const Product = ({ productInfo }) => {
         className="wrapper border-2 hover:border-2 hover:border-gray-700 min-h-[300px] capitalize p-6 flex flex-col gap-5 cursor-pointer">
         <header className="flex justify-between">
           <h1 className="text-2xl font-medium text-gray-600">
-            {productInfo.name}
+            {productInfo.title ? productInfo.title : "No name"}
           </h1>
           <AiOutlineDelete
             onClick={() => {
@@ -44,9 +54,17 @@ const Product = ({ productInfo }) => {
         </header>
         <span className="flex gap-2 text-gray-400">
           <p>Categories:</p>
-          {productInfo.categories.map((category, index) => (
-            <p key={index}>{category}</p>
-          ))}
+          <span className="flex flex-wrap gap-2">
+                {
+                    productInfo.categories.map((category, index) => (
+                        <span
+                            key={index}
+                            className="inline-block bg-gray-200 rounded px-3 py-1 text-sm  text-gray-700 capitalize">
+                            {category}
+                        </span>
+                    ))
+                }
+                </span>
         </span>
         <span className="flex text-gray-400 gap-2">
           <p>Price : ${productInfo.price}</p>|
@@ -65,7 +83,7 @@ const Product = ({ productInfo }) => {
           )}
         </span>
         <footer className="flex justify-between text-gray-600 mt-5">
-          <p>Date Posted : {productInfo.date_posted}</p>
+          <p>Date Posted : { handleDateTime(productInfo.date_posted)}</p>
 
           <p className="lowercase">{productInfo.views} views </p>
         </footer>
