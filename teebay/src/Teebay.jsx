@@ -1,3 +1,4 @@
+import AddProduct from "./pages/AddProduct";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ProductDetails from "./pages/ProductDetails";
@@ -11,6 +12,10 @@ export const protectedRoutes = [
   {
     path: "/product/:id",
     element: <ProductDetails />,
+  },
+  {
+    path: "/add-product",
+    element: <AddProduct />,
   }
 ];
 

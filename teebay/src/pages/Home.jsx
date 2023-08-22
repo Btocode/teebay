@@ -3,6 +3,8 @@ import Layout from "../ui/Layout"
 import Product from "../components/Product"
 import ConfirmationModal from "../ui/modals/ConfirmationModal"
 import SuccessModal from "../ui/modals/SuccessModal"
+import Button from "../ui/Button"
+import { useNavigate } from "react-router-dom"
 
 const products = [
   {
@@ -74,10 +76,11 @@ const products = [
 ]
 
 const Home = () => {
+  const navigate = useNavigate()
   return (
     <main className="w-full flex items-center h-full">
         <div
-        className="container mx-auto flex flex-col items-center h-[700px]"
+        className="container mx-auto flex flex-col items-center h-[750px] gap-4"
         >
         <h1 className="text-4xl text-gray-600 tracking-tighter">
             My Products
@@ -86,7 +89,17 @@ const Home = () => {
             {products.map((product) => (
               <Product key={product.id} productInfo={product} />
             ))}
+            
         </div>
+        <span className="flex justify-end w-[90%] mr-12 ">
+        <Button
+        onclick={() => {
+          navigate("/add-product")
+        }
+        }
+         classname={"bg-slate-500 text-white px-4 py-2 rounded-md"} text={"Add Product"} />
+        </span>
+        
         </div>
         <ConfirmationModal />
         <SuccessModal />
