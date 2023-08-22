@@ -14,14 +14,14 @@ async function startServer() {
   // Token validation middleware
   app.use((req, res, next) => {
     const authHeader = req.headers.authorization;
-
+    
     if (authHeader) {
       const token = authHeader.split(" ")[1];
 
       try {
         const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-
         req.userId = decodedToken.userId; // Attach user ID to request
+        console.log("Token validation successful.");
       } catch (error) {
         // Handle token validation error
         console.error("Token validation error:", error.message);

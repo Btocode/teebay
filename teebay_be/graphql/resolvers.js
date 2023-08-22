@@ -5,7 +5,37 @@ const jwt = require("jsonwebtoken");
 
 const resolvers = {
   Query: {
-    message: () => "Hello World",
+    getProductListOfUser: async (_, __, context) => {
+      const { userId } = context; // Extracted from the authentication token
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const products = await prisma.product.findMany({
+        where: {
+          sellerId: userId,
+        },
+        orderBy: {
+          date_posted: "desc",
+        },
+      });
+
+      return products;
+    },
+    getProduct: async (_, { id }) => {
+      let uid = parseInt(id);
+      try {
+      const product = await prisma.product.findUnique({
+        where: { id:uid },
+        include: { seller: true },
+      });
+
+      return product;
+      } catch (error) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+    }
   },
   Mutation: {
     createUser: async (_, { input }) => {
@@ -91,6 +121,33 @@ const resolvers = {
 
       return newProduct;
     },
+    updateProduct: async (_, { id, input }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      let pid = parseInt(id);
+      const product = await prisma.product.findUnique({
+        where: { id:pid },
+      });
+
+      if (!product) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+
+      if (product.sellerId !== userId) {
+        throw new ApolloError("You are not the seller of this product.", "UNAUTHORIZED");
+      }
+
+      const updatedProduct = await prisma.product.update({
+        where: { id:pid },
+        data: input,
+      });
+
+      return updatedProduct;
+    }
   },
 };
 
