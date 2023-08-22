@@ -147,6 +147,32 @@ const resolvers = {
       });
 
       return updatedProduct;
+    },
+    deleteProduct: async (_, { id }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      let pid = parseInt(id);
+      const product = await prisma.product.findUnique({
+        where: { id:pid },
+      });
+
+      if (!product) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+
+      if (product.sellerId !== userId) {
+        throw new ApolloError("You are not the seller of this product.", "UNAUTHORIZED");
+      }
+
+      const deletedProduct = await prisma.product.delete({
+        where: { id:pid },
+      });
+
+      return deletedProduct;
     }
   },
 };

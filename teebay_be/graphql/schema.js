@@ -58,7 +58,6 @@ const typeDefs = gql`
   }
 
   type Query {
-    # getProducts: [Product!]!
     getProduct(id: ID!): Product
     getProductListOfUser: [Product!]!
   }
