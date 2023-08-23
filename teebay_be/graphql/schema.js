@@ -60,7 +60,7 @@ const typeDefs = gql`
   type Query {
     getProduct(id: ID!): Product
     getProductListOfUser: [Product!]!
-    #getAllProducts: [product!]!
+    getAllProducts: [Product!]!
   }
 
   type Mutation {

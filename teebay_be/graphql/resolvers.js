@@ -36,9 +36,24 @@ const resolvers = {
         throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
       }
     },
-    // getAllProducts: async (_, __, context) => {
+    // get all the products from the database
+    getAllProducts: async (_, __, context) => {
+      const { userId } = context;
 
-    // }
+      const products = await prisma.product.findMany({
+        where: {
+          sellerId: {
+            not: userId,
+          },
+        },
+        orderBy: {
+          date_posted: "desc",
+        },
+        include: { seller: true },
+      });
+
+      return products;
+    },
   },
   Mutation: {
     createUser: async (_, { input }) => {
@@ -99,17 +114,12 @@ const resolvers = {
         throw new ApolloError("Password is incorrect.", "INCORRECT_PASSWORD");
       }
 
-      const decodedToken = jwt.verify(
-        existingUser.token,
-        process.env.JWT_SECRET
-      );
-
       // If password is correct, generate token
       const token = jwt.sign(
         {
           userId: existingUser.id,
           email: existingUser.email,
-          isSeller: decodedToken.isSeller ? true : false,
+          isSeller: false,
         },
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
