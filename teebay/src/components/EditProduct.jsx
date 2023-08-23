@@ -10,6 +10,7 @@ import { validateProductInfo } from "../utils/validateProductInfo";
 import NotFound from "../pages/NotFound"
 
 
+
 const EditProduct = ({ productInfo, loading , isSeller}) => {
   const [hasChanges, setHasChanges] = useState(false);
   const [product, setProduct] = useState({});
@@ -69,6 +70,14 @@ const EditProduct = ({ productInfo, loading , isSeller}) => {
       });
     }
   };
+
+  if(uError){
+    toast.error(uError.message, {
+        toastId: "update-product-error",
+        });
+    }
+
+
   return (
     <div className="container mx-auto flex flex-col items-center">
       {loading ? (

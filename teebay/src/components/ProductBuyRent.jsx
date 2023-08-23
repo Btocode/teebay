@@ -9,27 +9,27 @@ const ProductBuyRent = ({ productInfo }) => {
       <div className="product-details w-[800px] h-[500px] mt-5  p-8 flex flex-col gap-4 ">
         <span className="flex flex-col gap-4">
           <p className="text-4xl mb-5">
-            {productInfo.title ? productInfo.title : "No name"}
+            {productInfo?.title ? productInfo.title : "No name"}
           </p>
           <span className="flex gap-2 text-gray-400">
             <p>Categories:</p>
             <span className="flex flex-wrap gap-2">
-              {productInfo.categories.map((category, index) => (
+              {productInfo?.categories?.map((category, index) => (
                 <span
                   key={index}
                   className="inline-block bg-gray-200 rounded px-3 py-1 text-sm  text-gray-700 capitalize">
-                  {category.split("_").join(" ")}
+                  {category?.split("_").join(" ")}
                 </span>
               ))}
             </span>
           </span>
           <span className="flex text-gray-400 gap-2">
-            <p>Price : ${productInfo.price}</p>|
+            <p>Price : ${productInfo?.price}</p>|
             <p>
-              Rent : ${productInfo.rent} / {productInfo.rent_type}
+              Rent : ${productInfo?.rent} / {productInfo?.rent_type}
             </p>
           </span>
-          <p>{productInfo.description}</p>
+          <p>{productInfo?.description}</p>
         </span>
 
         <span className="flex gap-4 mt-5 justify-end">
