@@ -80,6 +80,7 @@ const typeDefs = gql`
     deleteProduct(id: ID!): Product!
     toggleIsSeller: Boolean!
     buyProduct(productId: ID!): Transection!
+    rentProduct(productId: ID!): Transection!
   }
 `;
 

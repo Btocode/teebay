@@ -281,6 +281,54 @@ const resolvers = {
 
       return newTransaction; // Return the transaction with the included product details
     },
+    rentProduct: async (_, { productId }, context) => {
+      const { userId } = context;
+
+      if (!productId) {
+        throw new ApolloError("Product id is required.", "PRODUCT_ID_REQUIRED");
+      }
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      // Find the product by productId
+      const product = await prisma.product.findUnique({
+        where: { id: parseInt(productId), isAvailable: true },
+      });
+
+      if (!product) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+
+      // Check if product is owned by the user
+      if (product.sellerId === userId) {
+        throw new ApolloError(
+          "You cannot rent your own product.",
+          "UNAUTHORIZED"
+        );
+      }
+
+      // Create a new transaction record
+      const newTransaction = await prisma.transaction.create({
+        data: {
+          type: "rent",
+          user: { connect: { id: userId } },
+          product: { connect: { id: parseInt(productId) } },
+        },
+        include: { product: true }, // Include the product in the result
+      });
+
+      // Update the product views count and availability
+      await prisma.product.update({
+        where: { id: parseInt(productId) },
+        data: {
+          views: product.views + 1,
+          isAvailable: false,
+        },
+      });
+
+      return newTransaction; // Return the transaction with the included product details
+    }
   },
 };
 
