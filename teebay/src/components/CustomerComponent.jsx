@@ -2,16 +2,16 @@ import { useQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { FiLoader } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import { GET_PRODUCT_LIST_OF_USER } from "../graphql/queries";
+import { GET_ALL_PRODUCTS } from "../graphql/queries";
 import Product from "./Product";
 
 const CustomerComponent = () => {
   const navigate = useNavigate();
-  const { loading, error, data } = useQuery(GET_PRODUCT_LIST_OF_USER);
+  const { loading, error, data } = useQuery(GET_ALL_PRODUCTS);
   const [productList, setProductList] = useState([]);
   useEffect(() => {
-    if (data?.getProductListOfUser) {
-      setProductList(data.getProductListOfUser);
+    if (data?.getAllProducts) {
+      setProductList(data.getAllProducts);
     }
   }, [data]);
   return (
