@@ -15,6 +15,37 @@ const typeDefs = gql`
     password: String!
   }
 
+  input CreateProductInput {
+    title: String!
+    price: Int!
+    rent: Int!
+    rent_type: String!
+    categories: [String!]!
+    description: String!
+  }
+
+  input UpdateProductInput {
+    title: String
+    price: Int
+    rent: Int
+    rent_type: String
+    categories: [String!]
+    description: String
+  }
+
+  type Product {
+    id: ID!
+    title: String!
+    price: Int!
+    rent: Int!
+    rent_type: String!
+    categories: [String!]!
+    description: String!
+    date_posted: String
+    views: Int
+    seller: User
+  }
+
   type User {
     id: ID!
     firstname: String!
@@ -27,12 +58,17 @@ const typeDefs = gql`
   }
 
   type Query {
-    message: String!
+    getProduct(id: ID!): Product
+    getProductListOfUser: [Product!]!
+    #getAllProducts: [product!]!
   }
 
   type Mutation {
-    createUser(input: CreateUserInput!): User
+    createUser(input: CreateUserInput!): User!
     loginUser(input: LoginUserInput!): User
+    createProduct(input: CreateProductInput!): Product!
+    updateProduct(id: ID!, input: UpdateProductInput): Product!
+    deleteProduct(id: ID!): Product!
   }
 `;
 

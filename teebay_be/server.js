@@ -1,4 +1,5 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 
@@ -8,11 +9,30 @@ const { prisma } = require("./db/prisma");
 
 async function startServer() {
   const app = express();
+  app.use(cors()); // Add this line to enable CORS
+
+  // Token validation middleware
+  app.use((req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader) {
+      const token = authHeader.split(" ")[1];
+
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+      req.userId = decodedToken.userId; // Attach user ID to request
+
+      console.log("Token validation successful.", decodedToken);
+    } else {
+      console.log("No token provided.");
+    }
+
+    next();
+  });
 
   const apolloServer = new ApolloServer({
     typeDefs: typeDefs,
     resolvers: resolvers,
-    context: { prisma },
+    context: ({ req }) => ({ prisma, userId: req.userId }), // Pass userId to context
   });
 
   await apolloServer.start();

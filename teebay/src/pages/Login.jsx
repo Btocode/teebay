@@ -1,7 +1,8 @@
 import { useMutation } from "@apollo/client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthContext } from "../context/authContext";
 import { LOGIN_USER } from "../graphql/mutations";
 import AuthLayout from "../ui/AuthLayout";
 import Button from "../ui/Button";
@@ -11,6 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const context = useContext(AuthContext);
 
   const [LoginUser, { data, loading, error }] = useMutation(LOGIN_USER);
 
@@ -36,6 +38,11 @@ const Login = () => {
             },
           },
         });
+        context.login(data.loginUser);
+        toast.success("Login successful", {
+          toastId: "login",
+        });
+        navigate("/");
       } catch (error) {
         toast.error(error.message, {
           toastId: "login",
@@ -43,16 +50,6 @@ const Login = () => {
       }
     }
   };
-
-  if (data) {
-    toast.success("Login successful", {
-      toastId: "login",
-    });
-
-    localStorage.setItem("token", data.loginUser.token);
-    localStorage.setItem("userId", data.loginUser.id);
-    navigate("/");
-  }
 
   return (
     <AuthLayout

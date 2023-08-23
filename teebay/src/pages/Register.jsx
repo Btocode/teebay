@@ -1,5 +1,6 @@
 import { useMutation } from "@apollo/client";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { CREATE_USER } from "../graphql/mutations";
 import AuthLayout from "../ui/AuthLayout";
@@ -14,6 +15,7 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
 
   const [createUser, { data, loading, error }] = useMutation(CREATE_USER);
 
@@ -77,6 +79,10 @@ const Register = () => {
             },
           },
         });
+        toast.success("Registration successful", {
+          toastId: "register",
+        });
+        navigate("/login");
       } catch (error) {
         toast.error(error.message, {
           toastId: "register",
@@ -84,13 +90,6 @@ const Register = () => {
       }
     }
   };
-
-  if(data?.createUser){
-    toast.success("Account created successfully", {
-      toastId: "register",
-    });
-    
-  }
 
   return (
     <AuthLayout

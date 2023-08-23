@@ -7,6 +7,15 @@ datasource db {
   url      = env("DATABASE_URL") // Set your PostgreSQL connection URL here
 }
 
+enum Category {
+  ELECTRONICS
+  FURNITURE
+  HOME_APPLIANCES
+  SPORTING_GOODS
+  OUTDOOR
+  TOYS
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   firstname String
@@ -16,4 +25,19 @@ model User {
   address   String
   phone     String
   token     String   @default("")
+  products  Product[]
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  title       String
+  price       Int        // Storing price in cents to avoid floating-point precision issues
+  rent        Int
+  rent_type   String
+  categories  Category[]
+  description String
+  date_posted DateTime   @default(now())
+  views       Int        @default(0)
+  seller      User?      @relation(fields: [sellerId], references: [id])
+  sellerId    Int?
 }

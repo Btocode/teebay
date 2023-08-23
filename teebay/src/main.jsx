@@ -1,6 +1,8 @@
+import store from "./redux/app/store";
 import { ApolloProvider } from "@apollo/client";
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,12 +16,14 @@ ReactDOM.createRoot(document.getElementById("root")).render(
     <ApolloProvider client={client}>
       <React.StrictMode>
         <BrowserRouter>
-          <Routes>
-            <Route
-              path="/*"
-              element={<App />}
-            />
-          </Routes>
+          <Provider store={store}>
+            <Routes>
+              <Route
+                path="/*"
+                element={<App />}
+              />
+            </Routes>
+          </Provider>
         </BrowserRouter>
 
         <ToastContainer />

@@ -23,4 +23,41 @@ const LOGIN_USER = gql`
   }
 `;
 
-export { CREATE_USER, LOGIN_USER };
+const CREATE_PRODUCT = gql`
+  mutation CreateProduct($input: CreateProductInput!) {
+    createProduct(input: $input) {
+      id
+      title
+      price
+      rent
+    }
+  }
+`;
+
+const UPDATE_PRODUCT = gql`
+  mutation UpdateProduct($id: ID!, $input: UpdateProductInput!) {
+    updateProduct(id: $id, input: $input) {
+      id
+      title
+      price
+      rent
+      rent_type
+      categories
+      description
+      date_posted
+      views
+    }
+
+  }
+`;
+
+const DELETE_PRODUCT = gql`
+  mutation DeleteProduct($id: ID!) {
+    deleteProduct(id: $id) {
+      id
+    }
+  }
+`;
+
+
+export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT };
