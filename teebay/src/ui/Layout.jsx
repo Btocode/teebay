@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import React, { useContext } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 import { Outlet, useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 import { AuthContext } from "../context/authContext";
 import { TOGGLE_IS_SELLER } from "../graphql/mutations";
 import Button from "./Button";
@@ -9,7 +10,9 @@ import Button from "./Button";
 const Layout = ({ children }) => {
   const { logout, user, isSeller, toggleIsSeller } = useContext(AuthContext);
   const navigate = useNavigate();
-  const [ToggleIsSellerMutaion] = useMutation(TOGGLE_IS_SELLER);
+  const [ToggleIsSellerMutaion, { loading }] = useMutation(TOGGLE_IS_SELLER);
+
+  if (loading) return <Loading />;
 
   const toggleIsSellerHandler = async () => {
     try {
