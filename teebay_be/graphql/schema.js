@@ -58,6 +58,14 @@ const typeDefs = gql`
     isSeller: Boolean
   }
 
+  type Transection {
+    id: ID!
+    type: String!
+    user: User!
+    product: Product!
+    createdAt: String!
+  }
+
   type Query {
     getProduct(id: ID!): Product
     getProductListOfUser: [Product!]!
@@ -71,6 +79,7 @@ const typeDefs = gql`
     updateProduct(id: ID!, input: UpdateProductInput): Product!
     deleteProduct(id: ID!): Product!
     toggleIsSeller: Boolean!
+    buyProduct(productId: ID!): Transection!
   }
 `;
 

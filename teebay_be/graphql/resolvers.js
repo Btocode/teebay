@@ -23,13 +23,23 @@ const resolvers = {
 
       return products;
     },
-    getProduct: async (_, { id }) => {
+    getProduct: async (_, { id }, context) => {
+      const { userId } = context;
+
       let uid = parseInt(id);
       try {
         const product = await prisma.product.findUnique({
           where: { id: uid },
           include: { seller: true },
         });
+
+        // Update the views count if product is not queried by the seller himself
+        if (product.sellerId !== userId) {
+          await prisma.product.update({
+            where: { id: uid },
+            data: { views: product.views + 1 },
+          });
+        }
 
         return product;
       } catch (error) {
@@ -45,6 +55,7 @@ const resolvers = {
           sellerId: {
             not: userId,
           },
+          isAvailable: true,
         },
         orderBy: {
           date_posted: "desc",
@@ -221,6 +232,54 @@ const resolvers = {
       });
 
       return updatedUser.isSeller;
+    },
+    buyProduct: async (_, { productId }, context) => {
+      const { userId } = context;
+
+      if (!productId) {
+        throw new ApolloError("Product id is required.", "PRODUCT_ID_REQUIRED");
+      }
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      // Find the product by productId
+      const product = await prisma.product.findUnique({
+        where: { id: parseInt(productId), isAvailable: true },
+      });
+
+      if (!product) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+
+      // Check if product is owned by the user
+      if (product.sellerId === userId) {
+        throw new ApolloError(
+          "You cannot buy your own product.",
+          "UNAUTHORIZED"
+        );
+      }
+
+      // Create a new transaction record
+      const newTransaction = await prisma.transaction.create({
+        data: {
+          type: "buy",
+          user: { connect: { id: userId } },
+          product: { connect: { id: parseInt(productId) } },
+        },
+        include: { product: true }, // Include the product in the result
+      });
+
+      // Update the product views count and availability
+      await prisma.product.update({
+        where: { id: parseInt(productId) },
+        data: {
+          views: product.views + 1,
+          isAvailable: false,
+        },
+      });
+
+      return newTransaction; // Return the transaction with the included product details
     },
   },
 };
