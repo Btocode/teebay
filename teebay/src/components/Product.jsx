@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/authContext";
 import { DELETE_PRODUCT } from "../graphql/mutations";
 import { setConfirmationModal } from "../redux/features/modal/modalSlice";
+import { toast } from "react-toastify";
 
 const Product = ({ productInfo }) => {
   const dispatch = useDispatch();
@@ -26,7 +27,6 @@ const Product = ({ productInfo }) => {
         variables: {
           id: selectedProduct,
         },
-
         update(cache) {
           cache.modify({
             fields: {
@@ -38,6 +38,7 @@ const Product = ({ productInfo }) => {
             },
           });
         },
+        
       });
     }
   }, [confirmationModal]);
@@ -62,6 +63,7 @@ const Product = ({ productInfo }) => {
 
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
+
 
   return (
     <div className="w-full p-4 ">

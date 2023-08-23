@@ -26,12 +26,6 @@ const ConfirmationModal = () => {
             text="Yes"
             onclick={() => {
               dispatch(
-                setSuccessModal({
-                  isOpen: true,
-                  message: "Product successfully deleted!",
-                })
-              );
-              dispatch(
                 setConfirmationModal({
                   isOpen: false,
                   message: null,

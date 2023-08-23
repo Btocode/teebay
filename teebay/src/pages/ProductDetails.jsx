@@ -9,6 +9,7 @@ import EditProduct from "../components/EditProduct";
 import ProductBuyRent from "../components/ProductBuyRent";
 import { AuthContext } from "../context/authContext";
 import { GET_PRODUCT } from "../graphql/queries";
+import NotFound from "./NotFound";
 
 const ProductDetails = () => {
   const params = useParams();

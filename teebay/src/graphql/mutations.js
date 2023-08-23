@@ -65,7 +65,21 @@ const TOGGLE_IS_SELLER = gql`
   }
 `;
 
+const BUY_PRODUCT_MUTATION = gql`
+  mutation BuyProduct($productId: ID!) {
+    buyProduct(productId: $productId) {
+      type
+      id
+      product {
+        title
+        id
+      }
+    }
+  }
+`;
+
 export {
+  BUY_PRODUCT_MUTATION,
   TOGGLE_IS_SELLER,
   CREATE_USER,
   LOGIN_USER,

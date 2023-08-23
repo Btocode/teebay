@@ -7,6 +7,7 @@ import { LOGIN_USER } from "../graphql/mutations";
 import AuthLayout from "../ui/AuthLayout";
 import Button from "../ui/Button";
 import Password from "../ui/Password";
+import Loading from "../components/Loading";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ const Login = () => {
     e.preventDefault();
     if (validateData()) {
       try {
-        const { data } = await LoginUser({
+        const { data, loading } = await LoginUser({
           variables: {
             input: {
               email,
@@ -39,9 +40,6 @@ const Login = () => {
           },
         });
         context.login(data.loginUser);
-        toast.success("Login successful", {
-          toastId: "login",
-        });
         navigate("/");
       } catch (error) {
         toast.error(error.message, {
@@ -50,6 +48,8 @@ const Login = () => {
       }
     }
   };
+
+  if(loading) return <Loading />
 
   return (
     <AuthLayout

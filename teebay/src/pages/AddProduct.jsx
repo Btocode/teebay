@@ -10,6 +10,7 @@ import Title from "../components/Title";
 import { CREATE_PRODUCT } from "../graphql/mutations";
 import Button from "../ui/Button";
 import { validateProductInfo } from "../utils/validateProductInfo";
+import Loading from "../components/Loading";
 
 const AddProduct = () => {
   const [current, setCurrent] = useState(0);
@@ -89,6 +90,9 @@ const AddProduct = () => {
     <Summery productInfo={productInfo} />,
   ];
 
+  if(loading) {
+    <Loading />
+  }
 
 
   const handleSubmit = () => {

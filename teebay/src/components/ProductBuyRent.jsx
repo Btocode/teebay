@@ -1,9 +1,67 @@
-import React from "react";
-import { GET_PRODUCT } from "../graphql/queries";
-import { useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { BUY_PRODUCT_MUTATION } from "../graphql/mutations";
+import { setConfirmationModal } from "../redux/features/modal/modalSlice";
 import Button from "../ui/Button";
+import { useNavigate } from "react-router-dom";
 
 const ProductBuyRent = ({ productInfo }) => {
+  const dispatch = useDispatch();
+  const { confirmationModal } = useSelector((state) => state.modals);
+
+  const navigate = useNavigate();
+  const [buyProduct, { loading, error }] = useMutation(BUY_PRODUCT_MUTATION, {
+    variables: { productId: productInfo.id },
+    update(cache) {
+      cache.modify({
+        fields: {
+          getAllProducts(existingProductRefs, { readField }) {
+            return existingProductRefs.filter(
+              (productRef) => productInfo.id !== readField("id", productRef)
+            );
+          },
+        },
+      });
+    },
+
+    onCompleted: (data) => {
+      // Handle successful completion, e.g., show a success message
+      toast.success("Product bought successfully", {
+        toastId: "buyProduct",
+      });
+      navigate("/");
+      
+    },
+    onError: (error) => {
+      toast.error(error.message, {
+        toastId: "buyProductError",
+      });
+      // Handle error, e.g., show an error message
+      console.error("Error buying product:", error);
+    },
+  });
+
+  useEffect(() => {
+    if (confirmationModal.confirmed && confirmationModal.from === "buy") {
+      buyProduct();
+    }
+  }, [confirmationModal]);
+
+  const handleBuy = (isBuy) => {
+    dispatch(
+      setConfirmationModal({
+        isOpen: true,
+        from: "buy",
+        confirmed: false,
+        message: `Are you sure you want to ${
+          isBuy ? "buy" : "rent"
+        } this product?`,
+      })
+    );
+  };
+
   return (
     <div className="container mx-auto flex flex-col capitalize text-gray-600 justify-center items-center ">
       <div className="product-details w-[800px] h-[500px] mt-5  p-8 flex flex-col gap-4 ">
@@ -38,6 +96,7 @@ const ProductBuyRent = ({ productInfo }) => {
             classname={"bg-blue-500 text-white px-8 py-2 rounded-md"}
           />
           <Button
+            onclick={() => handleBuy(true)}
             text={"Buy"}
             classname={"bg-blue-500 text-white px-8 py-2 rounded-md"}
           />
