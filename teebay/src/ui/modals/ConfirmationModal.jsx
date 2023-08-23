@@ -22,7 +22,7 @@ const ConfirmationModal = () => {
         </h1>
         <div className="flex gap-4 mt-4 float-right">
           <Button
-            classname="bg-red-500 text-white px-8 py-2 rounded-md"
+            classname=" bg-gray-500 text-white px-8 py-2 rounded-md"
             text="Yes"
             onclick={() => {
               dispatch(
@@ -36,7 +36,7 @@ const ConfirmationModal = () => {
             }}
           />
           <Button
-            classname="bg-gray-500 text-white px-8 py-2 rounded-md"
+            classname="bg-red-500 text-white px-8 py-2 rounded-md"
             text="No"
             onclick={() => {
               dispatch(

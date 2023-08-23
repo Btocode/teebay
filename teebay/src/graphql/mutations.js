@@ -78,7 +78,22 @@ const BUY_PRODUCT_MUTATION = gql`
   }
 `;
 
+const RENT_PRODUCT_MUTATION = gql`
+  mutation RentProduct($productId: ID!) {
+    rentProduct(productId: $productId) {
+      type
+      id
+      product {
+        title
+        id
+      }
+    }
+  }
+`;
+
+
 export {
+  RENT_PRODUCT_MUTATION,
   BUY_PRODUCT_MUTATION,
   TOGGLE_IS_SELLER,
   CREATE_USER,

@@ -2,7 +2,7 @@ import { useMutation } from "@apollo/client";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { BUY_PRODUCT_MUTATION } from "../graphql/mutations";
+import { BUY_PRODUCT_MUTATION, RENT_PRODUCT_MUTATION } from "../graphql/mutations";
 import { setConfirmationModal } from "../redux/features/modal/modalSlice";
 import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
@@ -43,9 +43,47 @@ const ProductBuyRent = ({ productInfo }) => {
     },
   });
 
+  const [rentProduct, { loading: rentLoading, error: rentError }] = useMutation(
+    RENT_PRODUCT_MUTATION,
+    {
+      variables: { productId: productInfo.id },
+      update(cache) {
+        cache.modify({
+          fields: {
+            getAllProducts(existingProductRefs, { readField }) {
+              return existingProductRefs.filter(
+                (productRef) => productInfo.id !== readField("id", productRef)
+              );
+            },
+
+          }
+        });
+      },
+      onCompleted: (data) => {
+        // Handle successful completion, e.g., show a success message
+        toast.success("Product rented successfully", {
+          toastId: "rentProduct",
+        });
+        navigate("/");
+      },
+      onError: (error) => {
+        toast.error(error.message, {
+          toastId: "rentProductError",
+        });
+        // Handle error, e.g., show an error message
+        console.error("Error renting product:", error);
+      },
+    }
+  );
+
+
+
   useEffect(() => {
     if (confirmationModal.confirmed && confirmationModal.from === "buy") {
       buyProduct();
+    }
+    if (confirmationModal.confirmed && confirmationModal.from === "rent") {
+      rentProduct();
     }
   }, [confirmationModal]);
 
@@ -53,7 +91,7 @@ const ProductBuyRent = ({ productInfo }) => {
     dispatch(
       setConfirmationModal({
         isOpen: true,
-        from: "buy",
+        from: isBuy ? "buy" : "rent",
         confirmed: false,
         message: `Are you sure you want to ${
           isBuy ? "buy" : "rent"
@@ -92,13 +130,16 @@ const ProductBuyRent = ({ productInfo }) => {
 
         <span className="flex gap-4 mt-5 justify-end">
           <Button
+            onclick={() => handleBuy(false)}
+          disabled={loading}
             text={"Rent"}
-            classname={"bg-blue-500 text-white px-8 py-2 rounded-md"}
+            classname={"bg-gray-500 text-white px-8 py-2 rounded-md"}
           />
           <Button
+          disabled={loading}
             onclick={() => handleBuy(true)}
             text={"Buy"}
-            classname={"bg-blue-500 text-white px-8 py-2 rounded-md"}
+            classname={"bg-gray-700 text-white px-8 py-2 rounded-md"}
           />
         </span>
       </div>
