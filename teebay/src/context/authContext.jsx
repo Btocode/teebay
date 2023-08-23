@@ -3,6 +3,7 @@ import React, { useReducer } from "react";
 
 const initialState = {
   user: null,
+  isSeller: false,
 };
 
 if (localStorage.getItem("token")) {
@@ -15,10 +16,15 @@ if (localStorage.getItem("token")) {
   }
 }
 
+// Get the isSeller value from localStorage and convert it to a boolean
+const isSellerFromLocalStorage = localStorage.getItem("isSeller");
+initialState.isSeller = isSellerFromLocalStorage === "true";
+
 const AuthContext = React.createContext({
   user: null,
   login: (userData) => {},
   logout: () => {},
+  toggleIsSeller: (data) => {},
 });
 
 const authReducer = (state, action) => {
@@ -27,6 +33,9 @@ const authReducer = (state, action) => {
       return { ...state, user: action.payload };
     case "LOGOUT":
       return { ...state, user: null };
+    case "TOGGLE_IS_SELLER":
+      return { ...state, isSeller: action.payload };
+
     default:
       return state;
   }
@@ -38,6 +47,10 @@ const AuthProvider = (props) => {
   const login = (userData) => {
     localStorage.setItem("token", userData.token);
     dispatch({
+      type: "TOGGLE_IS_SELLER",
+      payload: userData.isSeller,
+    });
+    dispatch({
       type: "LOGIN",
       payload: userData,
     });
@@ -48,9 +61,20 @@ const AuthProvider = (props) => {
     dispatch({ type: "LOGOUT" });
   };
 
+  const toggleIsSeller = (data) => {
+    localStorage.setItem("isSeller", data);
+    dispatch({ type: "TOGGLE_IS_SELLER", payload: data });
+  };
+
   return (
     <AuthContext.Provider
-      value={{ user: state.user, login, logout }}
+      value={{
+        user: state.user,
+        isSeller: state.isSeller,
+        login,
+        logout,
+        toggleIsSeller,
+      }}
       {...props}
     />
   );

@@ -1,28 +1,32 @@
 import { useMutation } from "@apollo/client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { setConfirmationModal } from "../redux/features/modal/modalSlice";
+import { AuthContext } from "../context/authContext";
 import { DELETE_PRODUCT } from "../graphql/mutations";
+import { setConfirmationModal } from "../redux/features/modal/modalSlice";
 
 const Product = ({ productInfo }) => {
   const dispatch = useDispatch();
   const [selectedProduct, setSelectedProduct] = useState({});
   const { confirmationModal } = useSelector((state) => state.modals);
   const [deleteProduct, { loading, error }] = useMutation(DELETE_PRODUCT);
-  const {isSeller} = useSelector(store => store.user)
+  const { isSeller } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
-
   useEffect(() => {
-    if (confirmationModal.confirmed && confirmationModal.from === "product" && selectedProduct) {
+    if (
+      confirmationModal.confirmed &&
+      confirmationModal.from === "product" &&
+      selectedProduct
+    ) {
       deleteProduct({
         variables: {
           id: selectedProduct,
         },
-        
+
         update(cache) {
           cache.modify({
             fields: {
@@ -34,7 +38,7 @@ const Product = ({ productInfo }) => {
             },
           });
         },
-      })
+      });
     }
   }, [confirmationModal]);
 
@@ -79,7 +83,9 @@ const Product = ({ productInfo }) => {
                 })
               );
             }}
-            className={`${!isSeller && "hidden" } deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500`}
+            className={`${
+              !isSeller && "hidden"
+            } deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500`}
           />
         </header>
         <span className="flex gap-2 text-gray-400">

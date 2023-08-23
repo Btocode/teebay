@@ -1,5 +1,5 @@
 import { useQuery } from "@apollo/client";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { FiLoader } from "react-icons/fi";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -10,10 +10,11 @@ import ConfirmationModal from "../ui/modals/ConfirmationModal";
 import SuccessModal from "../ui/modals/SuccessModal";
 import SellerComponent from "../components/SellerComponent";
 import CustomerComponent from "../components/CustomerComponent";
+import { AuthContext } from "../context/authContext";
 
 const Home = () => {
 
-  const { isSeller } = useSelector((store) => store.user);
+  const { isSeller } = useContext(AuthContext);
 
 
 

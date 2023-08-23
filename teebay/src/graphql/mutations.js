@@ -19,6 +19,7 @@ const LOGIN_USER = gql`
       email
       id
       token
+      isSeller
     }
   }
 `;
@@ -47,7 +48,6 @@ const UPDATE_PRODUCT = gql`
       date_posted
       views
     }
-
   }
 `;
 
@@ -59,5 +59,17 @@ const DELETE_PRODUCT = gql`
   }
 `;
 
+const TOGGLE_IS_SELLER = gql`
+  mutation ToggleIsSeller {
+    toggleIsSeller
+  }
+`;
 
-export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT };
+export {
+  TOGGLE_IS_SELLER,
+  CREATE_USER,
+  LOGIN_USER,
+  CREATE_PRODUCT,
+  UPDATE_PRODUCT,
+  DELETE_PRODUCT,
+};
