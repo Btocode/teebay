@@ -11,6 +11,7 @@ const Product = ({ productInfo }) => {
   const [selectedProduct, setSelectedProduct] = useState({});
   const { confirmationModal } = useSelector((state) => state.modals);
   const [deleteProduct, { loading, error }] = useMutation(DELETE_PRODUCT);
+  const {isSeller} = useSelector(store => store.user)
 
   const navigate = useNavigate();
 
@@ -78,7 +79,7 @@ const Product = ({ productInfo }) => {
                 })
               );
             }}
-            className="deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500"
+            className={`${!isSeller && "hidden" } deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500`}
           />
         </header>
         <span className="flex gap-2 text-gray-400">
