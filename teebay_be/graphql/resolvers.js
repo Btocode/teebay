@@ -84,7 +84,6 @@ const resolvers = {
         {
           userId: newUser.id,
           email: newUser.email,
-          isSeller: false,
         },
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
@@ -119,7 +118,6 @@ const resolvers = {
         {
           userId: existingUser.id,
           email: existingUser.email,
-          isSeller: false,
         },
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
@@ -205,6 +203,24 @@ const resolvers = {
       });
 
       return deletedProduct;
+    },
+    toggleIsSeller: async (_, __, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { isSeller: !user.isSeller },
+      });
+
+      return updatedUser.isSeller;
     },
   },
 };

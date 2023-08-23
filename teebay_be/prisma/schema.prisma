@@ -24,6 +24,7 @@ model User {
   email     String   @unique
   address   String
   phone     String
+  isSeller  Boolean  @default(false)
   token     String   @default("")
   products  Product[]
 }

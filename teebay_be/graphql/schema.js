@@ -55,6 +55,7 @@ const typeDefs = gql`
     address: String!
     phone: String!
     token: String
+    isSeller: Boolean
   }
 
   type Query {
@@ -69,6 +70,7 @@ const typeDefs = gql`
     createProduct(input: CreateProductInput!): Product!
     updateProduct(id: ID!, input: UpdateProductInput): Product!
     deleteProduct(id: ID!): Product!
+    toggleIsSeller: Boolean!
   }
 `;
 
