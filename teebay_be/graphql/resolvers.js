@@ -104,9 +104,8 @@ const resolvers = {
         },
         include: {
           user: true,
-          product: true
+          product: true,
         },
-
       });
 
       return transactions;
@@ -198,6 +197,7 @@ const resolvers = {
           ...input,
           seller: { connect: { id: userId } },
         },
+        include: { seller: true },
       });
 
       return newProduct;
@@ -254,6 +254,21 @@ const resolvers = {
           "UNAUTHORIZED"
         );
       }
+
+      // // check product is sold or rented
+      // if(product.isAvailable === false){
+      //   throw new ApolloError(
+      //     "You cannot delete this product because it is sold or rented.",
+      //     "PRODUCT_NOT_AVAILABLE"
+      //   );
+      // }
+
+      // remove transaction record
+      await prisma.transaction.deleteMany({
+        where: { productId: pid },
+      });
+
+
 
       const deletedProduct = await prisma.product.delete({
         where: { id: pid },
