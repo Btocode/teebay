@@ -65,14 +65,15 @@ const typeDefs = gql`
     user: User!
     product: Product!
     createdAt: String!
-    rentedUntil: String!
-    rentedFrom: String!
+    rentedUntil: String
+    rentedFrom: String
   }
 
   type Query {
     getProduct(id: ID!): Product
     getProductListOfUser: [Product!]!
     getAllProducts: [Product!]!
+    getProductsByType(type: String!): [Transection!]!
   }
 
   type Mutation {

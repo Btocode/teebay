@@ -66,6 +66,28 @@ const resolvers = {
 
       return products;
     },
+
+    getProductsByType: async (_, { type }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          type,
+          userId,
+        },
+        include: {
+          product: {
+            include: { seller: true },
+          },
+        },
+      });
+
+      return transactions;
+    },
   },
   Mutation: {
     createUser: async (_, { input }) => {
@@ -268,7 +290,11 @@ const resolvers = {
           user: { connect: { id: userId } },
           product: { connect: { id: parseInt(productId) } },
         },
-        include: { product: true }, // Include the product in the result
+        include: {
+          product: {
+            include: { seller: true },
+          },
+        }, // Include the product in the result
       });
 
       // Update the product views count and availability
