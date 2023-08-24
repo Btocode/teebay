@@ -33,10 +33,20 @@ const GET_PRODUCT = gql`
   }
 `;
 
-export { GET_PRODUCT_LIST_OF_USER, GET_PRODUCT };
+const GET_ALL_PRODUCTS = gql`
+  query GetAllProducts {
+    getAllProducts {
+      id
+      title
+      price
+      rent
+      rent_type
+      categories
+      description
+      date_posted
+      views
+    }
+  }
+`;
 
-// query{
-//   getProductListOfUser {
-//     id
-//   }
-// }
+export { GET_ALL_PRODUCTS, GET_PRODUCT_LIST_OF_USER, GET_PRODUCT };

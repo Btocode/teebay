@@ -23,7 +23,9 @@ const resolvers = {
 
       return products;
     },
-    getProduct: async (_, { id }) => {
+    getProduct: async (_, { id }, context) => {
+      const { userId } = context;
+
       let uid = parseInt(id);
       try {
         const product = await prisma.product.findUnique({
@@ -31,14 +33,38 @@ const resolvers = {
           include: { seller: true },
         });
 
+        // Update the views count if product is not queried by the seller himself
+        if (product.sellerId !== userId) {
+          await prisma.product.update({
+            where: { id: uid },
+            data: { views: product.views + 1 },
+          });
+        }
+
         return product;
       } catch (error) {
         throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
       }
     },
-    // getAllProducts: async (_, __, context) => {
+    // get all the products from the database
+    getAllProducts: async (_, __, context) => {
+      const { userId } = context;
 
-    // }
+      const products = await prisma.product.findMany({
+        where: {
+          sellerId: {
+            not: userId,
+          },
+          isAvailable: true,
+        },
+        orderBy: {
+          date_posted: "desc",
+        },
+        include: { seller: true },
+      });
+
+      return products;
+    },
   },
   Mutation: {
     createUser: async (_, { input }) => {
@@ -69,7 +95,6 @@ const resolvers = {
         {
           userId: newUser.id,
           email: newUser.email,
-          isSeller: false,
         },
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
@@ -99,17 +124,11 @@ const resolvers = {
         throw new ApolloError("Password is incorrect.", "INCORRECT_PASSWORD");
       }
 
-      const decodedToken = jwt.verify(
-        existingUser.token,
-        process.env.JWT_SECRET
-      );
-
       // If password is correct, generate token
       const token = jwt.sign(
         {
           userId: existingUser.id,
           email: existingUser.email,
-          isSeller: decodedToken.isSeller ? true : false,
         },
         process.env.JWT_SECRET,
         { expiresIn: "1d" }
@@ -196,6 +215,120 @@ const resolvers = {
 
       return deletedProduct;
     },
+    toggleIsSeller: async (_, __, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+      });
+
+      const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { isSeller: !user.isSeller },
+      });
+
+      return updatedUser.isSeller;
+    },
+    buyProduct: async (_, { productId }, context) => {
+      const { userId } = context;
+
+      if (!productId) {
+        throw new ApolloError("Product id is required.", "PRODUCT_ID_REQUIRED");
+      }
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      // Find the product by productId
+      const product = await prisma.product.findUnique({
+        where: { id: parseInt(productId), isAvailable: true },
+      });
+
+      if (!product) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+
+      // Check if product is owned by the user
+      if (product.sellerId === userId) {
+        throw new ApolloError(
+          "You cannot buy your own product.",
+          "UNAUTHORIZED"
+        );
+      }
+
+      // Create a new transaction record
+      const newTransaction = await prisma.transaction.create({
+        data: {
+          type: "buy",
+          user: { connect: { id: userId } },
+          product: { connect: { id: parseInt(productId) } },
+        },
+        include: { product: true }, // Include the product in the result
+      });
+
+      // Update the product views count and availability
+      await prisma.product.update({
+        where: { id: parseInt(productId) },
+        data: {
+          views: product.views + 1,
+          isAvailable: false,
+        },
+      });
+
+      return newTransaction; // Return the transaction with the included product details
+    },
+    rentProduct: async (_, { productId }, context) => {
+      const { userId } = context;
+
+      if (!productId) {
+        throw new ApolloError("Product id is required.", "PRODUCT_ID_REQUIRED");
+      }
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      // Find the product by productId
+      const product = await prisma.product.findUnique({
+        where: { id: parseInt(productId), isAvailable: true },
+      });
+
+      if (!product) {
+        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+      }
+
+      // Check if product is owned by the user
+      if (product.sellerId === userId) {
+        throw new ApolloError(
+          "You cannot rent your own product.",
+          "UNAUTHORIZED"
+        );
+      }
+
+      // Create a new transaction record
+      const newTransaction = await prisma.transaction.create({
+        data: {
+          type: "rent",
+          user: { connect: { id: userId } },
+          product: { connect: { id: parseInt(productId) } },
+        },
+        include: { product: true }, // Include the product in the result
+      });
+
+      // Update the product views count and availability
+      await prisma.product.update({
+        where: { id: parseInt(productId) },
+        data: {
+          views: product.views + 1,
+          isAvailable: false,
+        },
+      });
+
+      return newTransaction; // Return the transaction with the included product details
+    }
   },
 };
 

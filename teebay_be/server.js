@@ -18,15 +18,17 @@ async function startServer() {
     if (authHeader) {
       const token = authHeader.split(" ")[1];
 
-      const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-      req.userId = decodedToken.userId; // Attach user ID to request
-
-      console.log("Token validation successful.", decodedToken);
+      try {
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+        req.userId = decodedToken.userId; // Attach user ID to request
+      } catch (error) {
+        console.log("Invalid token.", error.message);
+      }
     } else {
       console.log("No token provided.");
     }
 
-    next();
+    next(); // Continue to the next middleware
   });
 
   const apolloServer = new ApolloServer({

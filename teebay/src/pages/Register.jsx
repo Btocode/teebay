@@ -6,6 +6,7 @@ import { CREATE_USER } from "../graphql/mutations";
 import AuthLayout from "../ui/AuthLayout";
 import Button from "../ui/Button";
 import Password from "../ui/Password";
+import Loading from "../components/Loading";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -67,7 +68,7 @@ const Register = () => {
     if (validateData()) {
       // Send data to backend
       try {
-        const { data } = await createUser({
+        const { data, loading } = await createUser({
           variables: {
             input: {
               firstname: firstName,
@@ -90,6 +91,8 @@ const Register = () => {
       }
     }
   };
+
+  if (loading) return <Loading />;
 
   return (
     <AuthLayout

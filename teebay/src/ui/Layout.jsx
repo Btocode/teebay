@@ -1,15 +1,33 @@
+import { useApolloClient, useMutation } from "@apollo/client";
 import React, { useContext } from "react";
 import { IoChevronBackCircleOutline } from "react-icons/io5";
 import { Outlet, useNavigate } from "react-router-dom";
+import Loading from "../components/Loading";
 import { AuthContext } from "../context/authContext";
+import { TOGGLE_IS_SELLER } from "../graphql/mutations";
 import Button from "./Button";
-import { useDispatch } from "react-redux";
-import { toggleIsSeller } from "../redux/features/userSlice";
 
 const Layout = ({ children }) => {
-  const { logout, user } = useContext(AuthContext);
+  const client = useApolloClient();
+
+  const handleClearCache = () => {
+    client.clearStore(); // Clear the Apollo Client cache
+  };
+  const { logout, user, isSeller, toggleIsSeller } = useContext(AuthContext);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const [ToggleIsSellerMutaion, { loading }] = useMutation(TOGGLE_IS_SELLER);
+
+  if (loading) return <Loading />;
+
+  const toggleIsSellerHandler = async () => {
+    try {
+      const { data } = await ToggleIsSellerMutaion();
+      toggleIsSeller(data.toggleIsSeller);
+      window.location.replace("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="h-screen flex gap-4 p-2 w-full flex-col items-center">
       <header className="bg-light border shadow rounded-lg sticky top-0 h-[60px] flex items-center justify-between px-4 z-10 w-full bg-slate-50">
@@ -34,16 +52,15 @@ const Layout = ({ children }) => {
         </div>
         <span className="flex gap-x-4">
           <Button
-            onclick={()=>{
-              dispatch(toggleIsSeller())
-            }}
-            text={"Seller Mode"}
+            onclick={toggleIsSellerHandler}
+            text={isSeller ? "Seller Mode" : "Customer Mode"}
             classname={
               " text-gray-500 px-4 py-2 rounded-md border hover:bg-slate-500 hover:text-white"
             }
           />
           <Button
             onclick={() => {
+              handleClearCache();
               logout();
             }}
             text={"Log Out"}

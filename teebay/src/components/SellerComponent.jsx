@@ -35,13 +35,18 @@ const SellerComponent = () => {
       )}
       <span
         className={`flex justify-end w-[90%] mr-12 ${
-          (error || loading) && "hidden"
-        }`}>
+          (error || loading) && "hidden"}
+          ${productList.length === 0 && "justify-center items-center gap-4 flex-col mr-0"}
+        `}>
+        {productList.length === 0 &&
+          "You have not added any products yet. Add a product to get started."}
+        <br />
+        
         <Button
           onclick={() => {
             navigate("/add-product");
           }}
-          classname={"bg-slate-500 text-white px-4 py-2 rounded-md"}
+          classname={`bg-slate-500 text-white px-4 py-2 rounded-md }`}
           text={"Add Product"}
         />
       </span>

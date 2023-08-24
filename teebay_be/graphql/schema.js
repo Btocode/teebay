@@ -55,12 +55,21 @@ const typeDefs = gql`
     address: String!
     phone: String!
     token: String
+    isSeller: Boolean
+  }
+
+  type Transection {
+    id: ID!
+    type: String!
+    user: User!
+    product: Product!
+    createdAt: String!
   }
 
   type Query {
     getProduct(id: ID!): Product
     getProductListOfUser: [Product!]!
-    #getAllProducts: [product!]!
+    getAllProducts: [Product!]!
   }
 
   type Mutation {
@@ -69,6 +78,9 @@ const typeDefs = gql`
     createProduct(input: CreateProductInput!): Product!
     updateProduct(id: ID!, input: UpdateProductInput): Product!
     deleteProduct(id: ID!): Product!
+    toggleIsSeller: Boolean!
+    buyProduct(productId: ID!): Transection!
+    rentProduct(productId: ID!): Transection!
   }
 `;
 

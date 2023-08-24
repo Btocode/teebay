@@ -19,6 +19,7 @@ const LOGIN_USER = gql`
       email
       id
       token
+      isSeller
     }
   }
 `;
@@ -47,7 +48,6 @@ const UPDATE_PRODUCT = gql`
       date_posted
       views
     }
-
   }
 `;
 
@@ -59,5 +59,46 @@ const DELETE_PRODUCT = gql`
   }
 `;
 
+const TOGGLE_IS_SELLER = gql`
+  mutation ToggleIsSeller {
+    toggleIsSeller
+  }
+`;
 
-export { CREATE_USER, LOGIN_USER, CREATE_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT };
+const BUY_PRODUCT_MUTATION = gql`
+  mutation BuyProduct($productId: ID!) {
+    buyProduct(productId: $productId) {
+      type
+      id
+      product {
+        title
+        id
+      }
+    }
+  }
+`;
+
+const RENT_PRODUCT_MUTATION = gql`
+  mutation RentProduct($productId: ID!) {
+    rentProduct(productId: $productId) {
+      type
+      id
+      product {
+        title
+        id
+      }
+    }
+  }
+`;
+
+
+export {
+  RENT_PRODUCT_MUTATION,
+  BUY_PRODUCT_MUTATION,
+  TOGGLE_IS_SELLER,
+  CREATE_USER,
+  LOGIN_USER,
+  CREATE_PRODUCT,
+  UPDATE_PRODUCT,
+  DELETE_PRODUCT,
+};
