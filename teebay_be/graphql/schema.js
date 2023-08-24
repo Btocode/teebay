@@ -74,6 +74,7 @@ const typeDefs = gql`
     getProductListOfUser: [Product!]!
     getAllProducts: [Product!]!
     getProductsByType(type: String!): [Transection!]!
+    getUsersProductByType(type: String!): [Transection!]!
   }
 
   type Mutation {

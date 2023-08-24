@@ -88,6 +88,29 @@ const resolvers = {
 
       return transactions;
     },
+    getUsersProductByType: async (_, { type }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          type,
+          product: {
+            sellerId: userId,
+          },
+        },
+        include: {
+          user: true,
+          product: true
+        },
+
+      });
+
+      return transactions;
+    },
   },
   Mutation: {
     createUser: async (_, { input }) => {
