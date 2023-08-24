@@ -13,6 +13,9 @@ export const modalSlice = createSlice({
       isOpen: false,
       message: null,
     },
+    rentModal: {
+      isOpen: false,
+    },
   },
   reducers: {
     setConfirmationModal: (state, action) => {
@@ -29,11 +32,18 @@ export const modalSlice = createSlice({
     setSuccessModal: (state, action) => {
       state.successModal = action.payload;
     },
+    setRentModal: (state, action) => {
+      state.rentModal.isOpen = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setSuccessModal, setConfirmationModal, closeConfirmationModal } =
-  modalSlice.actions;
+export const {
+  setSuccessModal,
+  setConfirmationModal,
+  closeConfirmationModal,
+  setRentModal,
+} = modalSlice.actions;
 
 export default modalSlice.reducer;

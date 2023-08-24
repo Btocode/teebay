@@ -3,10 +3,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AuthContext } from "../context/authContext";
 import { DELETE_PRODUCT } from "../graphql/mutations";
 import { setConfirmationModal } from "../redux/features/modal/modalSlice";
-import { toast } from "react-toastify";
 
 const Product = ({ productInfo }) => {
   const dispatch = useDispatch();
@@ -32,16 +32,22 @@ const Product = ({ productInfo }) => {
             fields: {
               getProductListOfUser(existingProductRefs, { readField }) {
                 return existingProductRefs.filter(
-                  (productRef) => productInfo.id !== readField("id", productRef)
+                  (productRef) =>
+                    selectedProduct !== readField("id", productRef)
                 );
               },
             },
           });
         },
-        
+        onCompleted: (data) => {
+          // Handle successful completion, e.g., show a success message
+          toast.success("Product deleted successfully", {
+            toastId: "deleteProduct",
+          });
+        },
       });
     }
-  }, [confirmationModal]);
+  }, [confirmationModal, deleteProduct, selectedProduct, toast]);
 
   const handleClickProduct = (event) => {
     // check if click is from delete button
@@ -63,7 +69,6 @@ const Product = ({ productInfo }) => {
 
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
-
 
   return (
     <div className="w-full p-4 ">

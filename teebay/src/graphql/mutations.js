@@ -79,18 +79,23 @@ const BUY_PRODUCT_MUTATION = gql`
 `;
 
 const RENT_PRODUCT_MUTATION = gql`
-  mutation RentProduct($productId: ID!) {
-    rentProduct(productId: $productId) {
-      type
-      id
+  mutation RentProduct(
+    $productId: ID!
+    $rentedFrom: String!
+    $rentedUntil: String!
+  ) {
+    rentProduct(
+      productId: $productId
+      rentedFrom: $rentedFrom
+      rentedUntil: $rentedUntil
+    ) {
       product {
         title
-        id
+        price
       }
     }
   }
 `;
-
 
 export {
   RENT_PRODUCT_MUTATION,

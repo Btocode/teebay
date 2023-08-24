@@ -1,15 +1,28 @@
 import { useMutation } from "@apollo/client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
-import { BUY_PRODUCT_MUTATION, RENT_PRODUCT_MUTATION } from "../graphql/mutations";
-import { setConfirmationModal } from "../redux/features/modal/modalSlice";
-import Button from "../ui/Button";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import {
+  BUY_PRODUCT_MUTATION,
+  RENT_PRODUCT_MUTATION,
+} from "../graphql/mutations";
+import {
+  setConfirmationModal,
+  setRentModal,
+} from "../redux/features/modal/modalSlice";
+import Button from "../ui/Button";
+import RentModal from "../ui/modals/RentModal";
+import Loading from "./Loading";
 
 const ProductBuyRent = ({ productInfo }) => {
+  const [rentalInfo, setRentalInfo] = useState({
+    from: "",
+    to: "",
+  });
+
   const dispatch = useDispatch();
-  const { confirmationModal } = useSelector((state) => state.modals);
+  const { confirmationModal, rentModal } = useSelector((state) => state.modals);
 
   const navigate = useNavigate();
   const [buyProduct, { loading, error }] = useMutation(BUY_PRODUCT_MUTATION, {
@@ -32,7 +45,6 @@ const ProductBuyRent = ({ productInfo }) => {
         toastId: "buyProduct",
       });
       navigate("/");
-      
     },
     onError: (error) => {
       toast.error(error.message, {
@@ -46,7 +58,11 @@ const ProductBuyRent = ({ productInfo }) => {
   const [rentProduct, { loading: rentLoading, error: rentError }] = useMutation(
     RENT_PRODUCT_MUTATION,
     {
-      variables: { productId: productInfo.id },
+      variables: {
+        productId: productInfo.id,
+        rentedFrom: rentalInfo.from,
+        rentedUntil: rentalInfo.to,
+      },
       update(cache) {
         cache.modify({
           fields: {
@@ -55,8 +71,7 @@ const ProductBuyRent = ({ productInfo }) => {
                 (productRef) => productInfo.id !== readField("id", productRef)
               );
             },
-
-          }
+          },
         });
       },
       onCompleted: (data) => {
@@ -76,29 +91,44 @@ const ProductBuyRent = ({ productInfo }) => {
     }
   );
 
-
-
   useEffect(() => {
     if (confirmationModal.confirmed && confirmationModal.from === "buy") {
       buyProduct();
     }
-    if (confirmationModal.confirmed && confirmationModal.from === "rent") {
-      rentProduct();
-    }
   }, [confirmationModal]);
 
-  const handleBuy = (isBuy) => {
-    dispatch(
-      setConfirmationModal({
-        isOpen: true,
-        from: isBuy ? "buy" : "rent",
-        confirmed: false,
-        message: `Are you sure you want to ${
-          isBuy ? "buy" : "rent"
-        } this product?`,
-      })
-    );
+  const validateInfo = () => {
+    if (new Date(rentalInfo.from) > new Date(rentalInfo.to)) {
+      return false;
+    }
+    return true;
   };
+
+  const handleBuy = async (isBuy) => {
+    if (isBuy) {
+      dispatch(
+        setConfirmationModal({
+          isOpen: true,
+          from: isBuy ? "buy" : "rent",
+          confirmed: false,
+          message: `Are you sure you want to ${
+            isBuy ? "buy" : "rent"
+          } this product?`,
+        })
+      );
+    } else {
+      if (validateInfo()) {
+        const res = await rentProduct();
+        dispatch(setRentModal(false));
+      } else {
+        toast.error("Rent from should be in the past in compare to rent end!", {
+          toastId: "rentProductError",
+        });
+      }
+    }
+  };
+
+  if (loading || rentLoading) return <Loading />;
 
   return (
     <div className="container mx-auto flex flex-col capitalize text-gray-600 justify-center items-center ">
@@ -130,19 +160,24 @@ const ProductBuyRent = ({ productInfo }) => {
 
         <span className="flex gap-4 mt-5 justify-end">
           <Button
-            onclick={() => handleBuy(false)}
-          disabled={loading}
+            onclick={() => dispatch(setRentModal(true))}
+            disabled={loading}
             text={"Rent"}
             classname={"bg-gray-500 text-white px-8 py-2 rounded-md"}
           />
           <Button
-          disabled={loading}
+            disabled={loading}
             onclick={() => handleBuy(true)}
             text={"Buy"}
             classname={"bg-gray-700 text-white px-8 py-2 rounded-md"}
           />
         </span>
       </div>
+      <RentModal
+        rentalInfo={rentalInfo}
+        setRentalInfo={setRentalInfo}
+        handleBuy={handleBuy}
+      />
     </div>
   );
 };
