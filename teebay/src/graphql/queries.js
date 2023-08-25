@@ -13,6 +13,7 @@ const GET_PRODUCT_LIST_OF_USER = gql`
       description
       date_posted
       views
+      isAvailable
     }
   }
 `;

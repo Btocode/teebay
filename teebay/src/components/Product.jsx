@@ -91,9 +91,16 @@ const Product = ({ productInfo, from }) => {
               );
             }}
             className={`${
-              (!isSeller || from === "transactions") && "hidden"
+              (!isSeller || from === "transactions" || !productInfo.isAvailable ) && "hidden"
             } deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500`}
           />
+          <span
+            className={`${
+              productInfo.isAvailable && "hidden"
+            } text-white px-2 py-1 rounded bg-gray-600`}>
+            Sold / Rented
+          </span>
+
         </header>
         <span className="flex gap-2 text-gray-400">
           <p>Categories:</p>

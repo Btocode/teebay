@@ -106,7 +106,7 @@ const Layout = ({ children }) => {
           </button>
           <Button
             onclick={toggleIsSellerHandler}
-            text={isSeller ? "Seller Mode" : "Customer Mode"}
+            text={!isSeller ? "Seller Mode" : "Customer Mode"}
             classname={
               " text-gray-500 px-4 py-2 rounded-md border hover:bg-slate-500 hover:text-white"
             }
