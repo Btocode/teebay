@@ -15,6 +15,7 @@ const Product = ({ productInfo, from }) => {
   const [deleteProduct, { loading, error }] = useMutation(DELETE_PRODUCT);
   const { isSeller } = useContext(AuthContext);
 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,6 +51,7 @@ const Product = ({ productInfo, from }) => {
   }, [confirmationModal, deleteProduct, selectedProduct, toast]);
 
   const handleClickProduct = (event) => {
+    if(productInfo?.isAvailable === false) return;
     // check if click is from delete button
     if (event.target.classList.contains("deleteButton")) {
       return;
@@ -85,7 +87,7 @@ const Product = ({ productInfo, from }) => {
               dispatch(
                 setConfirmationModal({
                   isOpen: true,
-                  message: `Are you sure you want to delete ${productInfo.name}?`,
+                  message: `Are you sure you want to delete ${productInfo.title}?`,
                   from: "product",
                 })
               );

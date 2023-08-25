@@ -30,6 +30,7 @@ const GET_PRODUCT = gql`
       categories
       description
       date_posted
+      isAvailable
     }
   }
 `;
@@ -46,6 +47,7 @@ const GET_ALL_PRODUCTS = gql`
       description
       date_posted
       views
+      isAvailable
     }
   }
 `;
@@ -63,6 +65,7 @@ const GET_PRODUCTS_BY_TYPE = gql`
         description
         date_posted
         views
+        isAvailable
       }
     }
   }
@@ -80,6 +83,7 @@ const GET_USERS_PRODUCTS_BY_TYPE = gql`
         description
         date_posted
         views
+        isAvailable
       }
     }
   }
