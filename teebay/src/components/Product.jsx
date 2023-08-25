@@ -8,7 +8,7 @@ import { AuthContext } from "../context/authContext";
 import { DELETE_PRODUCT } from "../graphql/mutations";
 import { setConfirmationModal } from "../redux/features/modal/modalSlice";
 
-const Product = ({ productInfo }) => {
+const Product = ({ productInfo, from }) => {
   const dispatch = useDispatch();
   const [selectedProduct, setSelectedProduct] = useState({});
   const { confirmationModal } = useSelector((state) => state.modals);
@@ -73,7 +73,7 @@ const Product = ({ productInfo }) => {
   return (
     <div className="w-full p-4 ">
       <div
-        onClick={handleClickProduct}
+        onClick={from !== "transactions" ? handleClickProduct : null}
         className="wrapper border-2 hover:border-2 hover:border-gray-700 min-h-[300px] capitalize p-6 flex flex-col gap-5 cursor-pointer">
         <header className="flex justify-between">
           <h1 className="text-2xl font-medium text-gray-600">
@@ -91,7 +91,7 @@ const Product = ({ productInfo }) => {
               );
             }}
             className={`${
-              !isSeller && "hidden"
+              (!isSeller || from === "transactions") && "hidden"
             } deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500`}
           />
         </header>

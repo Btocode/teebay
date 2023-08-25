@@ -50,7 +50,15 @@ const Layout = ({ children }) => {
             className="text-3xl text-gray-600 cursor-pointer"
           />
         </div>
+
         <span className="flex gap-x-4">
+          <button
+            onClick={() => {
+              navigate("/transactions");
+            }}
+            className="text-gray-500 px-4 py-2 rounded-md border hover:bg-slate-500 hover:text-white">
+            View Transactions
+          </button>
           <Button
             onclick={toggleIsSellerHandler}
             text={isSeller ? "Seller Mode" : "Customer Mode"}

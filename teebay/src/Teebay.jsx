@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import ProductDetails from "./pages/ProductDetails";
 import Register from "./pages/Register";
+import Transections from "./pages/Transections";
 
 export const protectedRoutes = [
   {
@@ -16,7 +17,11 @@ export const protectedRoutes = [
   {
     path: "/add-product",
     element: <AddProduct />,
-  }
+  },
+  {
+    path: "/transactions",
+    element: <Transections />,
+  },
 ];
 
 export const publicRoutes = [
