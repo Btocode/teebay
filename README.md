@@ -58,22 +58,23 @@ Teebay is a versatile e-commerce platform designed to facilitate the buying, sel
 
 Follow these steps to get the Teebay project up and running locally:
 
-## You can Run the project in two ways - 
-**1. Locally in your machine 
-2. Using Docker**
+
+# You can Run the project in two ways - 
+## Locally in your machine 
+## Using Docker
 
 
 
 **Running In Local Machine**
 To run the Teebay project locally on your machine, you'll need to install a few dependencies and tools. Here's a list of things you need to have installed:
 
-	-  Node.js and npm
-	-  Git    
-	-  PostgreSQL
+-> Node.js(v20) and npm(v9)
+-> Git    
+-> PostgreSQL
 
 1. Clone the repository using git:
     `https://github.com/Btocode/teebay.git` 
-2. Navigate to project directory
+2. Navigate to the project directory
 `cd teebay`
 3. Install backend dependencies
 	- Open another terminal in the project directory -> visit backend directory by `cd teebay_be`
