@@ -14,9 +14,9 @@ const getType = (active) => {
     case 2:
       return "buy";
     case 3:
-      return "lent";
+      return "rent";
     case 4:
-      return "lent";
+      return "rent";
 
     default:
       return "buy";
@@ -31,7 +31,7 @@ const Transections = () => {
     variables: {
       type: getType(active),
     }, // Pass the 'type' variable to the query
-    skip: active !== 1 && active !== 4, // Skip the query if the 'type' is not 'buy' or 'lent'
+    skip: active !== 1 && active !== 3, // Skip the query if the 'type' is not 'buy' or 'lent'
   });
   const {
     loading: loading2,
@@ -41,7 +41,7 @@ const Transections = () => {
     variables: {
       type: getType(active),
     }, // Pass the 'type' variable to the query
-    skip: active !== 2 && active !== 3, // Skip the query if the 'type' is not 'buy' or 'lent'
+    skip: active !== 2 && active !== 4, // Skip the query if the 'type' is not 'buy' or 'lent'
   });
   useEffect(() => {
     if (data) {

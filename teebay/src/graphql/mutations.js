@@ -20,6 +20,7 @@ const LOGIN_USER = gql`
       id
       token
       isSeller
+      firstname
     }
   }
 `;

@@ -84,6 +84,10 @@ const resolvers = {
             include: { seller: true },
           },
         },
+        orderBy: {
+          createdAt: "desc",
+        },
+
       });
 
       return transactions;
@@ -105,6 +109,9 @@ const resolvers = {
         include: {
           user: true,
           product: true,
+        },
+        orderBy: {
+          createdAt: "desc",
         },
       });
 
