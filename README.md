@@ -1,4 +1,5 @@
 
+
 # Teebay - Demo Marketplace for Buying, Selling, and Renting Products
 
 Welcome to **Teebay**, your one-stop online marketplace for all your buying, selling, and renting needs. Teebay is built using a modern tech stack, including ***React, Vite, Tailwind CSS, Apollo Client, Redux*** in the frontend, and ***Express.js, GraphQL, Apollo Server, Prisma, and PostgreSQL*** in the backend. It also utilizes ***JWT*** for user authentication.
@@ -78,13 +79,27 @@ To run the Teebay project locally on your machine, you'll need to install a few 
 `cd teebay`
 3. Install backend dependencies
 	- Open another terminal in the project directory -> visit backend directory by `cd teebay_be`
-	 - Go to backend directory `cd teebay_be` -> Run `npm install`
+	 - Go to backend directory 
+	 ``` bash
+	  cd teebay_be
+	  npm install 
+	  ```
 	 - Create a `.env` file in the project directory by following `.env.sample`.  *(Make sure your database creds are correct)*
+	 - As you are starting with a new database, you have to migrate all the schema. To do that 
+	 ``` bash
+	 npx prisma generate
+	 npx prisma migrate dev --name "Database migration"
+	 ```
+	 thats all. 
 	 - Run the project `npm run dev` 
 	 *(It will run the project in the specified port that you have mentioned in .env file. If you choose PORT 4000 it will run the backend in `http://localhost:4000` port. Later on, while creating `.env` file in frontend, please change `VITE_BASE_URL` to  `http://localhost:4000` )*
 	 
 4. Install frontend dependencies
-	- Go to frontend directory `cd teebay` -> Run `npm install`
+	- Go to the root project directory and then visit frontend directory `root -> teebay [frontend] `
+	 ``` bash
+	  cd teebay
+	  npm install 
+	  ``` 
 	- Create a `.env` file in the project directory by following `.env.sample`, and 
 	- Run the project `npm run dev`
 8.  Access the application in your web browser at `http://localhost:8080`.
