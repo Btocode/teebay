@@ -22,6 +22,7 @@ const PriceInput = ({ productInfo, setProductInfo }) => {
         <p>Price</p>
         <input
           type="number"
+          maxLength={6}
           placeholder="Purchase price"
           className="w-full border-2 p-2 rounded outline-gray-400"
           onChange={(e) => {
@@ -43,6 +44,7 @@ const PriceInput = ({ productInfo, setProductInfo }) => {
         <span className="w-full flex gap-4">
           <input
             type="number"
+            maxLength={6}
             placeholder="Rent price"
             className="border-2 p-2 rounded outline-gray-400"
             onChange={(e) => {
