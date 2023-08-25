@@ -44,6 +44,7 @@ const typeDefs = gql`
     date_posted: String
     views: Int
     seller: User
+    isAvailable: Boolean
   }
 
   type User {
@@ -64,12 +65,16 @@ const typeDefs = gql`
     user: User!
     product: Product!
     createdAt: String!
+    rentedUntil: String
+    rentedFrom: String
   }
 
   type Query {
     getProduct(id: ID!): Product
     getProductListOfUser: [Product!]!
     getAllProducts: [Product!]!
+    getProductsByType(type: String!): [Transection!]!
+    getUsersProductByType(type: String!): [Transection!]!
   }
 
   type Mutation {
@@ -80,7 +85,11 @@ const typeDefs = gql`
     deleteProduct(id: ID!): Product!
     toggleIsSeller: Boolean!
     buyProduct(productId: ID!): Transection!
-    rentProduct(productId: ID!): Transection!
+    rentProduct(
+      productId: ID!
+      rentedFrom: String!
+      rentedUntil: String!
+    ): Transection!
   }
 `;
 

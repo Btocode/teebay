@@ -2,6 +2,7 @@ const { prisma } = require("../db/prisma");
 const { ApolloError } = require("apollo-server-errors");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { parseISO, isValid } = require("date-fns");
 
 const resolvers = {
   Query: {
@@ -64,6 +65,50 @@ const resolvers = {
       });
 
       return products;
+    },
+
+    getProductsByType: async (_, { type }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          type,
+          userId,
+        },
+        include: {
+          product: {
+            include: { seller: true },
+          },
+        },
+      });
+
+      return transactions;
+    },
+    getUsersProductByType: async (_, { type }, context) => {
+      const { userId } = context;
+
+      if (!userId) {
+        throw new ApolloError("Authentication required.", "UNAUTHORIZED");
+      }
+
+      const transactions = await prisma.transaction.findMany({
+        where: {
+          type,
+          product: {
+            sellerId: userId,
+          },
+        },
+        include: {
+          user: true,
+          product: true,
+        },
+      });
+
+      return transactions;
     },
   },
   Mutation: {
@@ -152,6 +197,7 @@ const resolvers = {
           ...input,
           seller: { connect: { id: userId } },
         },
+        include: { seller: true },
       });
 
       return newProduct;
@@ -208,6 +254,21 @@ const resolvers = {
           "UNAUTHORIZED"
         );
       }
+
+      // // check product is sold or rented
+      // if(product.isAvailable === false){
+      //   throw new ApolloError(
+      //     "You cannot delete this product because it is sold or rented.",
+      //     "PRODUCT_NOT_AVAILABLE"
+      //   );
+      // }
+
+      // remove transaction record
+      await prisma.transaction.deleteMany({
+        where: { productId: pid },
+      });
+
+
 
       const deletedProduct = await prisma.product.delete({
         where: { id: pid },
@@ -267,7 +328,11 @@ const resolvers = {
           user: { connect: { id: userId } },
           product: { connect: { id: parseInt(productId) } },
         },
-        include: { product: true }, // Include the product in the result
+        include: {
+          product: {
+            include: { seller: true },
+          },
+        }, // Include the product in the result
       });
 
       // Update the product views count and availability
@@ -281,7 +346,7 @@ const resolvers = {
 
       return newTransaction; // Return the transaction with the included product details
     },
-    rentProduct: async (_, { productId }, context) => {
+    rentProduct: async (_, { productId, rentedFrom, rentedUntil }, context) => {
       const { userId } = context;
 
       if (!productId) {
@@ -297,7 +362,10 @@ const resolvers = {
       });
 
       if (!product) {
-        throw new ApolloError("Product not found.", "PRODUCT_NOT_FOUND");
+        throw new ApolloError(
+          "Product not found or not available for rent.",
+          "PRODUCT_NOT_FOUND"
+        );
       }
 
       // Check if product is owned by the user
@@ -308,27 +376,44 @@ const resolvers = {
         );
       }
 
+      // Parse and validate the dates
+      const parsedRentedFrom = parseISO(rentedFrom);
+      const parsedRentedUntil = parseISO(rentedUntil);
+
+      if (!isValid(parsedRentedFrom) || !isValid(parsedRentedUntil)) {
+        throw new ApolloError("Invalid date format.", "INVALID_DATE_FORMAT");
+      }
+
+      // Check if rentedUntil is after rentedFrom
+      if (parsedRentedUntil <= parsedRentedFrom) {
+        throw new ApolloError(
+          "rentedUntil must be after rentedFrom.",
+          "INVALID_DATE_RANGE"
+        );
+      }
+
       // Create a new transaction record
       const newTransaction = await prisma.transaction.create({
         data: {
           type: "rent",
           user: { connect: { id: userId } },
           product: { connect: { id: parseInt(productId) } },
+          rentedFrom: parsedRentedFrom,
+          rentedUntil: parsedRentedUntil,
         },
         include: { product: true }, // Include the product in the result
       });
 
-      // Update the product views count and availability
+      // Update the product availability
       await prisma.product.update({
         where: { id: parseInt(productId) },
         data: {
-          views: product.views + 1,
           isAvailable: false,
         },
       });
 
       return newTransaction; // Return the transaction with the included product details
-    }
+    },
   },
 };
 

@@ -3,12 +3,12 @@ import React, { useContext, useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AuthContext } from "../context/authContext";
 import { DELETE_PRODUCT } from "../graphql/mutations";
 import { setConfirmationModal } from "../redux/features/modal/modalSlice";
-import { toast } from "react-toastify";
 
-const Product = ({ productInfo }) => {
+const Product = ({ productInfo, from }) => {
   const dispatch = useDispatch();
   const [selectedProduct, setSelectedProduct] = useState({});
   const { confirmationModal } = useSelector((state) => state.modals);
@@ -32,16 +32,22 @@ const Product = ({ productInfo }) => {
             fields: {
               getProductListOfUser(existingProductRefs, { readField }) {
                 return existingProductRefs.filter(
-                  (productRef) => productInfo.id !== readField("id", productRef)
+                  (productRef) =>
+                    selectedProduct !== readField("id", productRef)
                 );
               },
             },
           });
         },
-        
+        onCompleted: (data) => {
+          // Handle successful completion, e.g., show a success message
+          toast.success("Product deleted successfully", {
+            toastId: "deleteProduct",
+          });
+        },
       });
     }
-  }, [confirmationModal]);
+  }, [confirmationModal, deleteProduct, selectedProduct, toast]);
 
   const handleClickProduct = (event) => {
     // check if click is from delete button
@@ -64,11 +70,10 @@ const Product = ({ productInfo }) => {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
   };
 
-
   return (
     <div className="w-full p-4 ">
       <div
-        onClick={handleClickProduct}
+        onClick={from !== "transactions" ? handleClickProduct : null}
         className="wrapper border-2 hover:border-2 hover:border-gray-700 min-h-[300px] capitalize p-6 flex flex-col gap-5 cursor-pointer">
         <header className="flex justify-between">
           <h1 className="text-2xl font-medium text-gray-600">
@@ -86,7 +91,7 @@ const Product = ({ productInfo }) => {
               );
             }}
             className={`${
-              !isSeller && "hidden"
+              (!isSeller || from === "transactions") && "hidden"
             } deleteButton text-gray-600 cursor-pointer text-3xl hover:text-red-500`}
           />
         </header>

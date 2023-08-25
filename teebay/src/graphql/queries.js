@@ -49,4 +49,45 @@ const GET_ALL_PRODUCTS = gql`
   }
 `;
 
-export { GET_ALL_PRODUCTS, GET_PRODUCT_LIST_OF_USER, GET_PRODUCT };
+const GET_PRODUCTS_BY_TYPE = gql`
+  query GetProductsByType($type: String!) {
+    getProductsByType(type: $type) {
+      product {
+        id
+        title
+        price
+        rent
+        rent_type
+        categories
+        description
+        date_posted
+        views
+      }
+    }
+  }
+`;
+const GET_USERS_PRODUCTS_BY_TYPE = gql`
+  query GetUsersProductByType($type: String!) {
+    getUsersProductByType(type: $type) {
+      product {
+        id
+        title
+        price
+        rent
+        rent_type
+        categories
+        description
+        date_posted
+        views
+      }
+    }
+  }
+`;
+
+export {
+  GET_USERS_PRODUCTS_BY_TYPE,
+  GET_ALL_PRODUCTS,
+  GET_PRODUCT_LIST_OF_USER,
+  GET_PRODUCT,
+  GET_PRODUCTS_BY_TYPE,
+};
