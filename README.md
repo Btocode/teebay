@@ -58,9 +58,10 @@ Teebay is a versatile e-commerce platform designed to facilitate the buying, sel
 
 Follow these steps to get the Teebay project up and running locally:
 
-You can Run the project in two ways -
-		- Locally in your machine
-		- Using Docker 
+## You can Run the project in two ways - 
+**1. Locally in your machine 
+2. Using Docker**
+
 
 
 **Running In Local Machine**
@@ -87,7 +88,7 @@ To run the Teebay project locally on your machine, you'll need to install a few 
 	- Run the project `npm run dev`
 8.  Access the application in your web browser at `http://localhost:8080`.
 
-**Running In Docker **
+**Running In Docker** 
 To run the project using docker, you must have docker install in your machine. 
 
 1. Clone the repository using git:
