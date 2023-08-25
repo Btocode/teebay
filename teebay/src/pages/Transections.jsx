@@ -14,9 +14,9 @@ const getType = (active) => {
     case 2:
       return "buy";
     case 3:
-      return "lent";
+      return "rent";
     case 4:
-      return "lent";
+      return "rent";
 
     default:
       return "buy";
@@ -51,6 +51,7 @@ const Transections = () => {
       setProductList(data2.getUsersProductByType);
     }
   }, [data, data2]);
+
 
   return (
     <div className="w-full">

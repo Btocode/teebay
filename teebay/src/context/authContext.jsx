@@ -46,6 +46,7 @@ const AuthProvider = (props) => {
 
   const login = (userData) => {
     localStorage.setItem("token", userData.token);
+    localStorage.setItem("username", userData.firstname);
     dispatch({
       type: "TOGGLE_IS_SELLER",
       payload: userData.isSeller,
