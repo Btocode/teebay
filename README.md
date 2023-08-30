@@ -62,9 +62,6 @@ Follow these steps to get the Teebay project up and running locally:
 
 # You can Run the project in two ways - 
 ## Locally in your machine 
-## Using Docker
-
-
 
 **Running In Local Machine**
 To run the Teebay project locally on your machine, you'll need to install a few dependencies and tools. Here's a list of things you need to have installed:
@@ -104,8 +101,12 @@ To run the Teebay project locally on your machine, you'll need to install a few 
 	- Run the project `npm run dev`
 8.  Access the application in your web browser at `http://localhost:8080`.
 
+
+## Using Docker
+
 **Running In Docker** 
-To run the project using docker, you must have docker install in your machine. 
+
+To run the project using docker, you must have docker installed on your machine. 
 
 1. Clone the repository using git:
     `https://github.com/Btocode/teebay.git` 
